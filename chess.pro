@@ -25,3 +25,6 @@ win32: LIBS += -L$$PWD/../SDL2_image-2.0.5/x86_64-w64-mingw32/lib/ -lSDL2_image
 
 INCLUDEPATH += $$PWD/../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 DEPENDPATH += $$PWD/../SDL2_image-2.0.5/x86_64-w64-mingw32/include
+
+HEADERS += \
+    Board.h
