@@ -4,10 +4,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <Board.h>
-
+#include <vector>
 #include <Pawn.h>
 
 using namespace std;
+
 
 int main(int argc, char *argv[])
 {
@@ -31,25 +32,86 @@ int main(int argc, char *argv[])
     board.texture = IMG_LoadTexture(renderer,"assets/images/board.png");
 
     SDL_Texture* pecas = IMG_LoadTexture(renderer, "assets/images/pieces.png");
-    cout << SDL_GetError() << endl;
 
+    //TESTESS
     Pawn peao = {"white"};
-    peao.setDestiny({.x=250, .y=250, .w=50, .h=50});
+    Pawn peao2 = {"black"};
 
-    SDL_Rect teste = peao.getOrigin();
-    SDL_Rect teste2 = peao.getDestiny();
+    vector<Piece*> whitePieces;
+    whitePieces.push_back(&peao);
+    whitePieces.push_back(&peao2);
+
+    peao.setDestiny({.x=64, .y=64, .w=50, .h=50});
+    peao2.setDestiny({.x=350, .y=250, .w=50, .h=50});
+    //tile size 124px
+
+    bool leftMouseButtonDown = false;
+    SDL_Point mousePos;
+    SDL_Point clickOffset;
+    Piece* selectedPiece = nullptr;
+
+    /////////////
 
     SDL_Event event;
+
     while(running)
     {
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer,  board.texture, NULL, &board.destiny);
-        SDL_RenderCopy(renderer, pecas, &teste, &teste2);
+
+        for(Piece* piece : whitePieces){
+            if(selectedPiece == piece) continue;
+            SDL_RenderCopy(renderer, pecas, piece->getOrigin(), piece->getDestiny());
+        }
+        //Sempre renderiza a peça selecionada por último para ela ficar por cima de todas
+        if(selectedPiece){
+            SDL_RenderCopy(renderer, pecas, selectedPiece->getOrigin(), selectedPiece->getDestiny());
+        }
+
+
+
         SDL_RenderPresent(renderer);
 
           while (SDL_PollEvent(&event)){
-              if(event.type == SDL_QUIT) running = false;
+              switch(event.type){
+                  case SDL_QUIT:
+                      running = false;
+                      break;
+
+                  case SDL_MOUSEMOTION:
+                      mousePos = { event.motion.x, event.motion.y };
+                      if (leftMouseButtonDown && selectedPiece){
+                          selectedPiece->getDestiny()->x = mousePos.x - clickOffset.x;
+                          selectedPiece->getDestiny()->y = mousePos.y - clickOffset.y;
+                       }
+                      break;
+
+                  case SDL_MOUSEBUTTONDOWN:
+                   if (!leftMouseButtonDown && event.button.button == SDL_BUTTON_LEFT){
+
+                       leftMouseButtonDown = true;
+
+                       for(Piece* piece : whitePieces){
+                           if(SDL_PointInRect(&mousePos, piece->getDestiny())){
+                               selectedPiece = piece;
+                               clickOffset.x = mousePos.x - piece->getDestiny()->x;
+                               clickOffset.y = mousePos.y - piece->getDestiny()->y;
+                           }
+                       }
+
+                   }
+                      break;
+
+                   case SDL_MOUSEBUTTONUP:
+                        leftMouseButtonDown = false;
+                        selectedPiece = nullptr;
+              }
+
+
+
           }
+
+
     }
 
     SDL_DestroyTexture(board.texture);
