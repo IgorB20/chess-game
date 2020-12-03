@@ -1,11 +1,18 @@
 #ifndef BOARD_H
 #define BOARD_H
 #include <SDL2/SDL.h>
-struct Board{
+#include <SDL2/SDL_image.h>
 
-    SDL_Texture* texture = nullptr;
-    SDL_Surface* surface = nullptr;
-    SDL_Rect destiny;
+class Board{
+
+    public:
+        int squareSize = 124/2;
+        Board(SDL_Renderer *renderer);
+        SDL_Texture* getTexture();
+        SDL_Rect* getDestiny();
+    private:
+        SDL_Texture* texture = nullptr;
+        SDL_Rect destiny;
 };
 
 #endif // BOARD_H
