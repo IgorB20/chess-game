@@ -13,16 +13,28 @@ Pawn::Pawn(string color) : Piece(color){
 void Pawn::showMoveOptions(Board board){
     int i = 1;
     int j = 1;
-    if(board.Board[i][j] == 'p')
+
+    if(board.Board[i][j] == 'p' && isFirstMove == true)
         {
          board.Board[i+1][j] = 'x';
          board.Board[i+2][j] = 'x';
+         isFirstMove = false;
+        }   else
+        {
+         board.Board[i+1][j] = 'x';
         }
-    if(board.Board[i][j] == 'P')
+
+
+    if(board.Board[i][j] == 'P' && isFirstMove == true)
         {
          board.Board[i-1][j] = 'x';
          board.Board[i-2][j] = 'x';
-        }
+         isFirstMove = false;
+    }   else
+    {
+     board.Board[i-1][j] = 'x';
+    }
+
 
     for (i = 0;i <= 7; i++)
     {
