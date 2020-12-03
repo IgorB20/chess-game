@@ -35,14 +35,19 @@ int main(int argc, char *argv[])
 
     //TESTESS
     Pawn peao = {"white"};
-    Pawn peao2 = {"black"};
 
     vector<Piece*> whitePieces;
     whitePieces.push_back(&peao);
-    whitePieces.push_back(&peao2);
 
-    peao.setDestiny({.x=64, .y=64, .w=50, .h=50});
-    peao2.setDestiny({.x=350, .y=250, .w=50, .h=50});
+
+    peao.setDestiny({.x=0, .y=64, .w=50, .h=50});
+
+    SDL_Point positionBackup = {.x=0,
+                               .y=64};
+
+    const int squareSize = 124/2;
+    SDL_Rect validSquare = {.x = 0, .y = 0, .w=squareSize, .h=squareSize};
+
     //tile size 124px
 
     bool leftMouseButtonDown = false;
@@ -81,6 +86,11 @@ int main(int argc, char *argv[])
                   case SDL_MOUSEMOTION:
                       mousePos = { event.motion.x, event.motion.y };
                       if (leftMouseButtonDown && selectedPiece){
+                          if(SDL_PointInRect(&mousePos, &validSquare)){
+                              cout << "em cima" << endl;
+                          }else{
+                              cout << "nao" << endl;
+                          }
                           selectedPiece->getDestiny()->x = mousePos.x - clickOffset.x;
                           selectedPiece->getDestiny()->y = mousePos.y - clickOffset.y;
                        }
@@ -103,15 +113,24 @@ int main(int argc, char *argv[])
                       break;
 
                    case SDL_MOUSEBUTTONUP:
+                          if(SDL_PointInRect(&mousePos, &validSquare)){
+                              selectedPiece->getDestiny()->x = validSquare.x;
+                              selectedPiece->getDestiny()->y = validSquare.y;
+                          }else{
+                              selectedPiece->getDestiny()->x = positionBackup.x;
+                              selectedPiece->getDestiny()->y = positionBackup.y;
+                          }
                         leftMouseButtonDown = false;
                         selectedPiece = nullptr;
+
+
               }
 
 
 
           }
 
-
+        SDL_Delay(1000/60);
     }
 
     SDL_DestroyTexture(board.texture);
