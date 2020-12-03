@@ -5,7 +5,7 @@
 class Pawn : public Piece {
     public:
         Pawn(string color);
-        void showMoveOptions();
+        void showMoveOptions(Board);
 };
 
 #endif // PAWN_H
