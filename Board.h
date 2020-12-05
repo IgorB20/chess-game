@@ -6,7 +6,16 @@
 class Board{
 
     public:
-        int squareSize = 124/2;
+        int squareSize;
+        char controlBoard[8][8] = {
+        {'r', 'h', 'b', 'k', 'q', 'b', 'h', 'r'},
+        {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+        {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+        {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
+        {'R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'}};
         Board(SDL_Renderer *renderer);
         SDL_Texture* getTexture();
         SDL_Rect* getDestiny();

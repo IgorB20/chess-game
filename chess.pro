@@ -10,8 +10,10 @@ CONFIG -= app_bundle
 SOURCES += \
         Board.cpp \
         Game.cpp \
+        Knight.cpp \
         Pawn.cpp \
         Piece.cpp \
+        PiecesInitializer.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -33,5 +35,7 @@ DEPENDPATH += $$PWD/../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 HEADERS += \
     Board.h \
     Game.h \
+    Knight.h \
     Pawn.h \
-    Piece.h
+    Piece.h \
+    PiecesInitializer.h

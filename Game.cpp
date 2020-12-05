@@ -1,6 +1,9 @@
 #include <Game.h>
-
+#include <Pawn.h>
+#include <Knight.h>
 #include <iostream>
+
+#include <PiecesInitializer.h>
 
 Game::Game(){
     this->init();
@@ -15,6 +18,8 @@ void Game::init(){
     this->renderer = SDL_CreateRenderer(this->getWindow(), -1, 0);
     this->board = {this->getRenderer()};
     this->piecesTextures = IMG_LoadTexture(this->getRenderer(), "assets/images/pieces.png");
+
+    PiecesInitializer::initAll(this->board, this->pieces);
 }
 
 void Game::initWindow(){
@@ -24,6 +29,7 @@ void Game::initWindow(){
                                     500, 500,
                                     0);
 }
+
 
 void Game::setSelectedPiece(Piece* piece){
     this->selectedPiece = piece;
@@ -69,7 +75,12 @@ void Game::renderPieces(){
     }
 };
 
+
+
 void Game::end(){
+    for(Piece* piece : this->pieces){
+        delete piece;
+    }
     SDL_DestroyTexture(this->getBoard().getTexture());
     SDL_DestroyTexture(this->piecesTextures);
     SDL_DestroyRenderer(this->getRenderer());

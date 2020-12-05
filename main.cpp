@@ -18,15 +18,12 @@ int main(int argc, char *argv[])
     Game game;
 
     //TESTESS
-    Pawn peao = {"white"};
-    peao.setDestiny({.x=0, .y=64, .w=50, .h=50});
+    //Pawn peao = {"white", {.x=0, .y=124}};
+    //peao.setDestiny({.x=0, .y=64, .w=50, .h=50});
 
-    game.pieces.push_back(&peao);
-
-    SDL_Point positionBackup = {.x=0, .y=64}; //propriedade da classe Piece
+    //game.pieces.push_back(&peao);
 
     SDL_Rect validSquare = {.x = 0, .y = 0, .w= game.getBoard().squareSize, .h= game.getBoard().squareSize};
-
 
     //criar struct de mouse
     bool leftMouseButtonDown = false;
@@ -85,8 +82,8 @@ int main(int argc, char *argv[])
                               game.getSelectedPiece()->getDestiny()->x = validSquare.x;
                               game.getSelectedPiece()->getDestiny()->y = validSquare.y;
                           }else{
-                              game.getSelectedPiece()->getDestiny()->x = positionBackup.x;
-                              game.getSelectedPiece()->getDestiny()->y = positionBackup.y;
+                              game.getSelectedPiece()->getDestiny()->x = game.getSelectedPiece()->getCoordinate()->x;
+                              game.getSelectedPiece()->getDestiny()->y = game.getSelectedPiece()->getCoordinate()->y;
                           }
                         leftMouseButtonDown = false;
                         game.setSelectedPiece(nullptr);
