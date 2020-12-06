@@ -3,9 +3,9 @@
 
 //construtor
 
-Pawn::Pawn(string color, SDL_Point initialCoordinate) : Piece(color, initialCoordinate){
-    this->setDestiny({.x=initialCoordinate.x,
-                      .y=initialCoordinate.y,
+Pawn::Pawn(string color, SDL_Point initialCoordinate, int squareSize) : Piece(color, initialCoordinate){
+    this->setDestiny({.x=initialCoordinate.x * squareSize,
+                      .y=initialCoordinate.y* squareSize,
                       .w=50,
                       .h=50
                      });
@@ -19,6 +19,6 @@ Pawn::Pawn(string color, SDL_Point initialCoordinate) : Piece(color, initialCoor
 
 
 
-void Pawn::showMoveOptions(){
+void Pawn::showMoveOptions(Board* board){
     std::cout << "mostrando movimentos do peao" << std::endl;
 }

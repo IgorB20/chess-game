@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     //game.pieces.push_back(&peao);
 
-    SDL_Rect validSquare = {.x = 0, .y = 0, .w= game.getBoard().squareSize, .h= game.getBoard().squareSize};
+    //SDL_Rect validSquare = {.x = 0, .y = 0, .w= game.getBoard().squareSize, .h= game.getBoard().squareSize};
 
     //criar struct de mouse
     bool leftMouseButtonDown = false;
@@ -43,6 +43,8 @@ int main(int argc, char *argv[])
         SDL_RenderPresent(game.getRenderer());
 
           while (SDL_PollEvent(&event)){
+
+
               switch(event.type){
                   case SDL_QUIT:
                      game.setRunning(false);
@@ -51,11 +53,9 @@ int main(int argc, char *argv[])
                   case SDL_MOUSEMOTION:
                       mousePos = { event.motion.x, event.motion.y };
                       if (leftMouseButtonDown && game.getSelectedPiece()){
-                          if(SDL_PointInRect(&mousePos, &validSquare)){
-                              cout << "em cima" << endl;
-                          }else{
-                              cout << "nao" << endl;
-                          }
+
+                          game.getSelectedPiece()->showMoveOptions(game.getBoard());
+
                           game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
                           game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
                        }
@@ -78,16 +78,49 @@ int main(int argc, char *argv[])
                       break;
 
                    case SDL_MOUSEBUTTONUP:
-                          if(SDL_PointInRect(&mousePos, &validSquare)){
-                              game.getSelectedPiece()->getDestiny()->x = validSquare.x;
-                              game.getSelectedPiece()->getDestiny()->y = validSquare.y;
-                          }else{
-                              game.getSelectedPiece()->getDestiny()->x = game.getSelectedPiece()->getCoordinate()->x;
-                              game.getSelectedPiece()->getDestiny()->y = game.getSelectedPiece()->getCoordinate()->y;
-                          }
-                        leftMouseButtonDown = false;
-                        game.setSelectedPiece(nullptr);
+                    if(game.getSelectedPiece()){
 
+
+                        if(game.getSelectedPiece()->getValidSquares().size() == 0){
+                            game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
+                        }
+
+                        for(SDL_Rect validSquare : game.getSelectedPiece()->getValidSquares()){
+                            //cout << validSquare.x << ", " << validSquare.y << endl;
+                            if(SDL_PointInRect(&mousePos, &validSquare)){
+                                cout << "caiu aqui " << validSquare.x << ", " << validSquare.y << endl;
+
+                                game.getSelectedPiece()->getDestiny()->x = validSquare.x;
+                                game.getSelectedPiece()->getDestiny()->y = validSquare.y;
+
+
+                                SDL_Point oldCoordinate = game.getSelectedPiece()->getCoordinate();
+
+                                 game.getSelectedPiece()->setCoordinate({.x =validSquare.x/game.getBoard()->squareSize,
+                                                                        .y=validSquare.y/game.getBoard()->squareSize
+                                                                      });
+
+                                 game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
+
+
+
+                                  break;
+                            }else{
+                                game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
+                            }
+                        }
+
+                      game.getSelectedPiece()->resetValidSquares();
+                      game.setSelectedPiece(nullptr);
+                    }
+                    leftMouseButtonDown = false;
+
+                    for(int i = 0;i<8;i++){
+                        for(int j = 0;j<8;j++){
+                             cout << game.getBoard()->controlBoard[i][j] << " ";
+                        }
+                        cout << endl;
+                    }
 
               }
 

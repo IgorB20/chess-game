@@ -4,9 +4,9 @@
 
 //construtor
 
-Knight::Knight(string color, SDL_Point initialCoordinate) : Piece(color, initialCoordinate){
-    this->setDestiny({.x=initialCoordinate.x,
-                      .y=initialCoordinate.y,
+Knight::Knight(string color, SDL_Point initialCoordinate, int squareSize) : Piece(color, initialCoordinate){
+    this->setDestiny({.x=initialCoordinate.x*squareSize,
+                      .y=initialCoordinate.y*squareSize,
                       .w=50,
                       .h=50
                      });
@@ -20,6 +20,86 @@ Knight::Knight(string color, SDL_Point initialCoordinate) : Piece(color, initial
 
 
 
-void Knight::showMoveOptions(){
-    std::cout << "mostrando movimentos do cavalo" << std::endl;
+void Knight::showMoveOptions(Board *board){
+
+    int squareSize = board->squareSize;
+
+    int linha = this->getCoordinate().y;
+    int coluna = this->getCoordinate().x;
+
+    cout << linha << ", " << coluna << endl;
+
+    //cima
+      if(linha - 2 >= 0){
+          if( coluna + 1 <= 7 ){
+               //board->controlBoard[linha-2][coluna+1] = 'X';
+              int newY = (linha-2)*squareSize;
+              int newX = (coluna+1)*squareSize;
+              this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+          }
+          if( coluna - 1 >= 0 ){
+               //board->controlBoard[linha-2][coluna-1] = 'X';
+              int newY = (linha-2)*squareSize;
+              int newX = (coluna-1)*squareSize;
+              this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+          }
+
+
+      }
+
+
+    //direita
+
+    if(coluna + 2 <= 7){
+        if( linha + 1 <= 7 ){
+           //controlBoard[linha+1][coluna+2] = 'X';
+            int newY = (linha+1)*squareSize;
+            int newX = (coluna+2)*squareSize;
+            this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+        }
+
+        if( linha - 1 >= 0 ){
+           //controlBoard[linha-1][coluna+2] = 'X';
+            int newY = (linha-1)*squareSize;
+            int newX = (coluna+2)*squareSize;
+            this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+        }
+
+    }
+
+    //BAIXO
+    if(linha + 2 >= 0){
+        if( coluna + 1 <= 7 ){
+
+            int newY = (linha+2)*squareSize;
+            int newX = (coluna+1)*squareSize;
+            this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+        }
+        if( coluna - 1 >= 0 ){
+
+            int newY = (linha+2)*squareSize;
+            int newX = (coluna-1)*squareSize;
+            this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+        }
+    }
+
+
+    //esquerda
+    if(coluna - 2 <= 7){
+        if( linha + 1 <= 7 ){
+           //controlBoard[linha+1][coluna+2] = 'X';
+            int newY = (linha+1)*squareSize;
+            int newX = (coluna-2)*squareSize;
+            this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+        }
+
+        if( linha - 1 >= 0 ){
+           //controlBoard[linha-1][coluna+2] = 'X';
+            int newY = (linha-1)*squareSize;
+            int newX = (coluna-2)*squareSize;
+            this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+        }
+
+    }
+
 }

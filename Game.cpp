@@ -55,12 +55,12 @@ void Game::setRunning(bool running){
     this->running = running;
 };
 
-Board Game::getBoard(){
-    return this->board;
+Board* Game::getBoard(){
+    return &this->board;
 };
 
 void Game::renderBoard(){
- SDL_RenderCopy(this->getRenderer(),  this->getBoard().getTexture(), NULL, this->getBoard().getDestiny());
+ SDL_RenderCopy(this->getRenderer(),  this->getBoard()->getTexture(), NULL, this->getBoard()->getDestiny());
 };
 
 
@@ -81,7 +81,7 @@ void Game::end(){
     for(Piece* piece : this->pieces){
         delete piece;
     }
-    SDL_DestroyTexture(this->getBoard().getTexture());
+    SDL_DestroyTexture(this->getBoard()->getTexture());
     SDL_DestroyTexture(this->piecesTextures);
     SDL_DestroyRenderer(this->getRenderer());
     SDL_DestroyWindow(this->getWindow());

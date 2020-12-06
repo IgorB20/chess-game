@@ -23,7 +23,8 @@ class Game{
         Piece* getSelectedPiece();
         SDL_Renderer* getRenderer();
         SDL_Window* getWindow();
-        Board getBoard();
+        Board* getBoard();
+
 
     private:
         SDL_Texture* piecesTextures = nullptr;

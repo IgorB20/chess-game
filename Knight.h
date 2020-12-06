@@ -4,9 +4,9 @@
 
 class Knight : public Piece{
     public:
-        Knight(string color, SDL_Point initialCoordinate);
+        Knight(string color, SDL_Point initialCoordinate, int squareSize);
         ~Knight() = default;
-        void showMoveOptions();
+        void showMoveOptions(Board *board);
 };
 
 #endif // KNIGHT_H
