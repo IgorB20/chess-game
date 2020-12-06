@@ -19,6 +19,7 @@ class Game{
         void setRunning(bool running);
         void end();
         bool isRunning();
+        void checkCapture();
         void setSelectedPiece(Piece* piece);
         Piece* getSelectedPiece();
         SDL_Renderer* getRenderer();

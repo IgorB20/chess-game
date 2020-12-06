@@ -10,6 +10,19 @@ Piece::Piece(string color, SDL_Point initialCoordinate){
 
 }
 
+bool Piece::isAValidCoordinate(SDL_Point coordinate, Board* board){
+    if(coordinate.x >=0 && coordinate.x < 8 && coordinate.y >=0 && coordinate.y < 8){
+        if((this->isWhite() && !isupper(board->controlBoard[coordinate.y][coordinate.x])) ||
+                (!this->isWhite() && isupper(board->controlBoard[coordinate.y][coordinate.x])) ||
+                board->controlBoard[coordinate.y][coordinate.x] == '0'){
+            return true;
+        }
+    }
+
+
+    return false;
+};
+
 void Piece::restorePosition(int squareSize){
     this->getDestiny()->x = this->getCoordinate().x*squareSize;
     this->getDestiny()->y = this->getCoordinate().y*squareSize;

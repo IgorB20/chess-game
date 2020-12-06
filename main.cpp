@@ -111,6 +111,9 @@ int main(int argc, char *argv[])
                         }
 
                       game.getSelectedPiece()->resetValidSquares();
+
+                      game.checkCapture();
+
                       game.setSelectedPiece(nullptr);
                     }
                     leftMouseButtonDown = false;

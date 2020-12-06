@@ -75,6 +75,25 @@ void Game::renderPieces(){
     }
 };
 
+void Game::checkCapture(){
+
+    int index = 0;
+    for(Piece* piece : this->pieces){
+          SDL_Point coordinate = piece->getCoordinate();
+          if(this->getSelectedPiece() != piece){
+              if(this->getSelectedPiece()->getCoordinate().x == coordinate.x &&
+                  this->getSelectedPiece()->getCoordinate().y == coordinate.y){
+
+                  delete piece;
+                  this->pieces.erase(this->pieces.begin() + index);
+                  break;
+              }
+          }
+
+          index++;
+    }
+};
+
 
 
 void Game::end(){
