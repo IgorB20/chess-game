@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
     SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
     bool running = true;
 
+
     Board board;
     board.destiny = {.x= 0, .y= 0, .w= 1000/2, .h= 1000/2};
     board.texture = IMG_LoadTexture(renderer,"assets/images/board.png");
@@ -36,6 +37,8 @@ int main(int argc, char *argv[])
     //TESTESS
     Pawn peao = {"white"};
     Pawn peao2 = {"black"};
+
+    peao.showMoveOptions(board);
 
     vector<Piece*> whitePieces;
     whitePieces.push_back(&peao);

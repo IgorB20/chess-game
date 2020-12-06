@@ -2,6 +2,7 @@
 #define PIECE_H
 #include <SDL2/SDL.h>
 #include <string>
+#include <Board.h>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ class Piece{
         bool isWhite();
 
         //metodo que vai ser sobrescrito por cada peça
-        virtual void showMoveOptions() = 0;
+        virtual void showMoveOptions(Board) = 0;
 
 };
 
