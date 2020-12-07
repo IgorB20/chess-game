@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <Board.h>
+#include <Game.h>
 #include <vector>
 #include <Pawn.h>
 
@@ -15,77 +16,50 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
 
 
-    if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
-        cout << SDL_GetError() << endl;
+    Game game;
 
-
-    SDL_Window* window = SDL_CreateWindow("Chess",
-                                             SDL_WINDOWPOS_CENTERED,
-                                             SDL_WINDOWPOS_CENTERED,
-                                             500, 500,
-                                             0);
-    SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
-    bool running = true;
-
-
-    Board board;
-    board.destiny = {.x= 0, .y= 0, .w= 1000/2, .h= 1000/2};
-    board.texture = IMG_LoadTexture(renderer,"assets/images/board.png");
-
-    SDL_Texture* pecas = IMG_LoadTexture(renderer, "assets/images/pieces.png");
 
     //TESTESS
-    Pawn peao = {"white"};
-    Pawn peao2 = {"black"};
+    //Pawn peao = {"white", {.x=0, .y=124}};
+    //peao.setDestiny({.x=0, .y=64, .w=50, .h=50});
+    //game.pieces.push_back(&peao);
 
-    peao.showMoveOptions(board);
 
-    vector<Piece*> whitePieces;
-    whitePieces.push_back(&peao);
-    whitePieces.push_back(&peao2);
+    //SDL_Rect validSquare = {.x = 0, .y = 0, .w= game.getBoard().squareSize, .h= game.getBoard().squareSize};
 
-    peao.setDestiny({.x=64, .y=64, .w=50, .h=50});
-    peao2.setDestiny({.x=350, .y=250, .w=50, .h=50});
-    //tile size 124px
-
+    //criar struct de mouse
     bool leftMouseButtonDown = false;
     SDL_Point mousePos;
     SDL_Point clickOffset;
-    Piece* selectedPiece = nullptr;
 
-    /////////////
+
+    ///////////
 
     SDL_Event event;
 
-    while(running)
+    while(game.isRunning())
     {
-        SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer,  board.texture, NULL, &board.destiny);
-
-        for(Piece* piece : whitePieces){
-            if(selectedPiece == piece) continue;
-            SDL_RenderCopy(renderer, pecas, piece->getOrigin(), piece->getDestiny());
-        }
-        //Sempre renderiza a peça selecionada por último para ela ficar por cima de todas
-        if(selectedPiece){
-            SDL_RenderCopy(renderer, pecas, selectedPiece->getOrigin(), selectedPiece->getDestiny());
-        }
-
-
-
-        SDL_RenderPresent(renderer);
+        SDL_RenderClear(game.getRenderer());
+        game.renderBoard();
+        game.renderPieces();
+        SDL_RenderPresent(game.getRenderer());
 
           while (SDL_PollEvent(&event)){
+
+
               switch(event.type){
                   case SDL_QUIT:
-                      running = false;
+                     game.setRunning(false);
                       break;
 
                   case SDL_MOUSEMOTION:
                       mousePos = { event.motion.x, event.motion.y };
-                      if (leftMouseButtonDown && selectedPiece){
-                          selectedPiece->getDestiny()->x = mousePos.x - clickOffset.x;
-                          selectedPiece->getDestiny()->y = mousePos.y - clickOffset.y;
+                      if (leftMouseButtonDown && game.getSelectedPiece()){
+
+                          game.getSelectedPiece()->showMoveOptions(game.getBoard());
+
+                          game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
+                          game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
                        }
                       break;
 
@@ -94,9 +68,9 @@ int main(int argc, char *argv[])
 
                        leftMouseButtonDown = true;
 
-                       for(Piece* piece : whitePieces){
+                       for(Piece* piece : game.pieces){
                            if(SDL_PointInRect(&mousePos, piece->getDestiny())){
-                               selectedPiece = piece;
+                               game.setSelectedPiece(piece);
                                clickOffset.x = mousePos.x - piece->getDestiny()->x;
                                clickOffset.y = mousePos.y - piece->getDestiny()->y;
                            }
@@ -106,23 +80,65 @@ int main(int argc, char *argv[])
                       break;
 
                    case SDL_MOUSEBUTTONUP:
-                        leftMouseButtonDown = false;
-                        selectedPiece = nullptr;
+                    if(game.getSelectedPiece()){
+
+
+                        if(game.getSelectedPiece()->getValidSquares().size() == 0){
+                            game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
+                        }
+
+                        for(SDL_Rect validSquare : game.getSelectedPiece()->getValidSquares()){
+                            //cout << validSquare.x << ", " << validSquare.y << endl;
+                            if(SDL_PointInRect(&mousePos, &validSquare)){
+                                cout << "caiu aqui " << validSquare.x << ", " << validSquare.y << endl;
+
+                                game.getSelectedPiece()->getDestiny()->x = validSquare.x;
+                                game.getSelectedPiece()->getDestiny()->y = validSquare.y;
+
+
+                                SDL_Point oldCoordinate = game.getSelectedPiece()->getCoordinate();
+
+                                 game.getSelectedPiece()->setCoordinate({.x =validSquare.x/game.getBoard()->squareSize,
+                                                                        .y=validSquare.y/game.getBoard()->squareSize
+                                                                      });
+
+                                 game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
+
+
+
+                                  break;
+                            }else{
+                                game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
+                            }
+                        }
+
+                      game.getSelectedPiece()->resetValidSquares();
+
+                      game.checkCapture();
+
+                      game.setSelectedPiece(nullptr);
+                    }
+                    leftMouseButtonDown = false;
+
+                    for(int i = 0;i<8;i++){
+                        for(int j = 0;j<8;j++){
+                             cout << game.getBoard()->controlBoard[i][j] << " ";
+                        }
+                        cout << endl;
+                    }
+
               }
 
 
 
           }
 
-
+        SDL_Delay(1000/60);
     }
 
-    SDL_DestroyTexture(board.texture);
-    SDL_FreeSurface(board.surface);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    game.end();
 
-    SDL_Quit();
+
 
     return a.exec();
 }

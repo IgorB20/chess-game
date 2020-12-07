@@ -2,7 +2,14 @@
 #include <iostream>
 
 //construtor
-Pawn::Pawn(string color) : Piece(color){
+
+Pawn::Pawn(string color, SDL_Point initialCoordinate, int squareSize) : Piece(color, initialCoordinate){
+    this->setDestiny({.x=initialCoordinate.x * squareSize,
+                      .y=initialCoordinate.y* squareSize,
+                      .w=50,
+                      .h=50
+                     });
+
     if(this->isWhite()){
         this->setOrigin({.x=1070, .y=12, .w=204, .h=193});
     }else{
@@ -10,7 +17,7 @@ Pawn::Pawn(string color) : Piece(color){
     }
 }
 
-void Pawn::showMoveOptions(Board board){
+void Pawn::showMoveOptions(Board* board){
     int i = 1;
     int j = 1;
 

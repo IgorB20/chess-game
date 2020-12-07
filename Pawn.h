@@ -4,9 +4,11 @@
 
 class Pawn : public Piece {
     public:
-        Pawn(string color);
-        void showMoveOptions(Board);
-        bool isFirstMove = true;
+
+        Pawn(string color, SDL_Point initialCoordinate, int squareSize);
+        ~Pawn() = default;
+        void showMoveOptions(Board *board);
+
 };
 
 #endif // PAWN_H
