@@ -14,6 +14,7 @@ class PiecesInitializer{
       static void initKnights(Board board, vector<Piece*> &pieces);
       static void initBishops(Board board, vector<Piece*> &pieces);
       static void initQueens(Board board, vector<Piece*> &pieces);
+      static void initKings(Board board, vector<Piece*> &pieces);
 };
 
 #endif // PIECESINITIALIZER_H
