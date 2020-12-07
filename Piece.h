@@ -2,8 +2,10 @@
 #define PIECE_H
 #include <SDL2/SDL.h>
 #include <string>
+
 #include <vector>
 #include <Board.h>
+
 
 
 using namespace std;
@@ -37,6 +39,9 @@ class Piece{
 
         //metodo que vai ser sobrescrito por cada peça
         virtual void showMoveOptions(Board* board) = 0;
+
+
+
 
 };
 

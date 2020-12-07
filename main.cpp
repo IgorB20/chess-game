@@ -15,13 +15,15 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
+
     Game game;
+
 
     //TESTESS
     //Pawn peao = {"white", {.x=0, .y=124}};
     //peao.setDestiny({.x=0, .y=64, .w=50, .h=50});
-
     //game.pieces.push_back(&peao);
+
 
     //SDL_Rect validSquare = {.x = 0, .y = 0, .w= game.getBoard().squareSize, .h= game.getBoard().squareSize};
 

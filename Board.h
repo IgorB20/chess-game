@@ -37,4 +37,5 @@ class Board{
         SDL_Rect destiny;
 };
 
+
 #endif // BOARD_H
