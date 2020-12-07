@@ -15,24 +15,12 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-
     Game game;
-
-
-    //TESTESS
-    //Pawn peao = {"white", {.x=0, .y=124}};
-    //peao.setDestiny({.x=0, .y=64, .w=50, .h=50});
-    //game.pieces.push_back(&peao);
-
-
-    //SDL_Rect validSquare = {.x = 0, .y = 0, .w= game.getBoard().squareSize, .h= game.getBoard().squareSize};
 
     //criar struct de mouse
     bool leftMouseButtonDown = false;
     SDL_Point mousePos;
     SDL_Point clickOffset;
-
-
     ///////////
 
     SDL_Event event;
@@ -88,9 +76,8 @@ int main(int argc, char *argv[])
                         }
 
                         for(SDL_Rect validSquare : game.getSelectedPiece()->getValidSquares()){
-                            //cout << validSquare.x << ", " << validSquare.y << endl;
+
                             if(SDL_PointInRect(&mousePos, &validSquare)){
-                                cout << "caiu aqui " << validSquare.x << ", " << validSquare.y << endl;
 
                                 game.getSelectedPiece()->getDestiny()->x = validSquare.x;
                                 game.getSelectedPiece()->getDestiny()->y = validSquare.y;
@@ -104,9 +91,8 @@ int main(int argc, char *argv[])
 
                                  game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
 
+                                 break;
 
-
-                                  break;
                             }else{
                                 game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
                             }
