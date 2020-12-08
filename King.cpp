@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <math.h>
+
 King::King(string color, SDL_Point initialCoordinate, int squareSize) : Piece(color, initialCoordinate){
     this->setDestiny({.x=initialCoordinate.x*squareSize,
                       .y=initialCoordinate.y*squareSize,
@@ -15,7 +17,6 @@ King::King(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
          this->setOrigin({.x=6, .y=225, .w=204, .h=193});
     }
 }
-
 
 
 void King::showMoveOptions(Board *board){
@@ -40,7 +41,9 @@ void King::showMoveOptions(Board *board){
 
             linha += direction.y;
             coluna += direction.x;
-            if(this->isAValidCoordinate({.x=coluna, .y=linha}, board)){
+
+            if(this->isAValidCoordinate({.x=coluna, .y=linha}, board) &&
+                !this->isThereACheck(board, {.x=coluna, .y=linha})){
 
                 int newY = (linha)*squareSize;
                 int newX = (coluna)*squareSize;
@@ -51,3 +54,33 @@ void King::showMoveOptions(Board *board){
         coluna = this->getCoordinate().x;
     }
 }
+
+bool King::isThereACheck(Board *board, SDL_Point position){
+
+    //horizontais
+     for(int j=0; j < 8; j++){
+
+             if(board->controlBoard[position.y][j] == 'q'){
+                if( fabs(this->getCoordinate().x - j) <= 1 && j == position.x){
+                    return false;
+                }else{
+                     return true;
+                }
+             }
+     }
+
+     //verticais
+     for(int i=0; i < 8; i++){
+
+             if(board->controlBoard[i][position.x] == 'q'){
+                if( fabs(this->getCoordinate().y - i) <= 1 && i == position.y){
+                    return false;
+                }else{
+                     return true;
+                }
+             }
+     }
+
+     return false;
+
+};

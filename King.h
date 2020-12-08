@@ -7,6 +7,7 @@ class King : public Piece{
     public:
         King(string color, SDL_Point initialCoordinate, int squareSize);
         ~King() = default;
+        bool isThereACheck(Board *board, SDL_Point position);
         void showMoveOptions(Board *board);
 };
 
