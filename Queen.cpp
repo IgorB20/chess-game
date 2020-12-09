@@ -44,6 +44,9 @@ void Queen::showMoveOptions(Board *board){
                 int newY = (linha)*squareSize;
                 int newX = (coluna)*squareSize;
                 this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+
+                if(this->isAEnemyPiece({.x=coluna, .y=linha}, board)) stop = true;
+
             }else{
                 stop = true;
             }
@@ -52,5 +55,8 @@ void Queen::showMoveOptions(Board *board){
         stop = false;
         linha = this->getCoordinate().y;
         coluna = this->getCoordinate().x;
+
+
     }
+
 }

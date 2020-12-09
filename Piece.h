@@ -25,6 +25,7 @@ class Piece{
         Piece(string color, SDL_Point initialCoordinate);
         virtual ~Piece() = default;
         void restorePosition(int squareSize);
+        bool isAEnemyPiece(SDL_Point coordinate, Board* board);
         bool isAValidCoordinate(SDL_Point coordinate, Board* board);
         vector<SDL_Rect> getValidSquares();
         void addValidSquare(SDL_Rect square);

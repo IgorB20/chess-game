@@ -57,30 +57,106 @@ void King::showMoveOptions(Board *board){
 
 bool King::isThereACheck(Board *board, SDL_Point position){
 
-    //horizontais
-     for(int j=0; j < 8; j++){
+     int peca_frente_y = -1;
+     int rainha_y = -1;
+     bool teste = false;
+     //verticais pra cima do rei
+     for(int i=position.y; i>=0; i--){
 
-             if(board->controlBoard[position.y][j] == 'q'){
-                if( fabs(this->getCoordinate().x - j) <= 1 && j == position.x){
-                    return false;
-                }else{
-                     return true;
-                }
-             }
+         if(board->controlBoard[i][position.x] != 'q' &&
+                board->controlBoard[i][position.x] != '0'){
+                peca_frente_y = i;
+         }
+         if(board->controlBoard[i][position.x] == 'q'){
+             rainha_y = i;
+            if( fabs(this->getCoordinate().y - i) <= 1 && i == position.y){
+                teste = false;
+            }else{
+                 teste = true;
+                 //return true;
+
+            }
+         }
      }
 
-     //verticais
-     for(int i=0; i < 8; i++){
+     if(peca_frente_y > -1)
+         if(fabs(position.y - peca_frente_y) < fabs(position.y - rainha_y)){
+             teste =  false;
+         }
 
-             if(board->controlBoard[i][position.x] == 'q'){
-                if( fabs(this->getCoordinate().y - i) <= 1 && i == position.y){
-                    return false;
-                }else{
-                     return true;
-                }
-             }
+     if(teste) return teste;
+
+
+     peca_frente_y = -1;
+     rainha_y = -1;
+     //verticais pra baixo do rei
+     for(int i=position.y; i<8; i++){
+
+         if(board->controlBoard[i][position.x] != 'q' &&
+                board->controlBoard[i][position.x] != '0'){
+                peca_frente_y = i;
+         }
+         if(board->controlBoard[i][position.x] == 'q'){
+             rainha_y = i;
+            if( fabs(this->getCoordinate().y - i) <= 1 && i == position.y){
+                teste = false;
+            }else{
+                 teste = true;
+                //return true;
+            }
+         }
      }
 
-     return false;
+    if(peca_frente_y > -1)
+         if(fabs(position.y - peca_frente_y) < fabs(position.y - rainha_y)){
+             teste =  false;
+         }
+
+    if(teste) return teste;
+
+
+    peca_frente_y = -1;
+    rainha_y = -1;
+    //horizontais pra direita do rei
+    for(int i=position.x; i<8; i++){
+
+        if(board->controlBoard[position.y][i] != 'q' &&
+               board->controlBoard[position.y][i] != '0'){
+               peca_frente_y = i;
+        }
+        if(board->controlBoard[position.y][i] == 'q'){
+            rainha_y = i;
+           if( fabs(this->getCoordinate().y - i) <= 1 && i == position.x){
+               teste = false;
+           }else{
+                teste = true;
+               //return true;
+           }
+        }
+    }
+
+   if(peca_frente_y > -1)
+        if(fabs(position.y - peca_frente_y) < fabs(position.y - rainha_y)){
+            teste =  false;
+        }
+
+
+
+
+     return teste;
+
+
+     //horizontais
+     /*
+      for(int j=0; j < 8; j++){
+
+              if(board->controlBoard[position.y][j] == 'q'){
+                 if( fabs(this->getCoordinate().x - j) <= 1 && j == position.x){
+                     return false;
+                 }else{
+                      return true;
+                 }
+              }
+      }*/
 
 };
