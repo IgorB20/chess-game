@@ -12,7 +12,7 @@ void PiecesInitializer::initAll(Board board, vector<Piece*> &pieces){
     PiecesInitializer::initKnights(board, pieces);
     PiecesInitializer::initBishops(board, pieces);
     PiecesInitializer::initQueens(board, pieces);
-    PiecesInitializer::initKings(board, pieces);
+    //PiecesInitializer::initKings(board, pieces);
 }
 
 
@@ -73,17 +73,4 @@ void PiecesInitializer::initQueens(Board board, vector<Piece*> &pieces){
     }
 };
 
-void PiecesInitializer::initKings(Board board, vector<Piece*> &pieces){
-    for(int i = 0;i<8;i++){
-        for(int j = 0;j<8;j++){
-            if(board.controlBoard[i][j] == 'K'){
-                pieces.push_back(new King("white", {.x=j,
-                                                       .y=i},board.squareSize));
-            }
-            if(board.controlBoard[i][j] == 'k'){
-                pieces.push_back(new King("black", {.x=j,
-                                                       .y=i},board.squareSize));
-            }
-        }
-    }
-}
+

@@ -5,8 +5,21 @@
 
 #include <PiecesInitializer.h>
 
+#include <King.h>
+
 Game::Game(){
     this->init();
+
+    //teste - inicializando rei das brancas
+    for(int i = 0;i<8;i++){
+        for(int j = 0;j<8;j++){
+            if(this->board.controlBoard[i][j] == 'K'){
+                this->king = new King("white", {.x=j, .y=i},this->board.squareSize);
+            }
+        }
+    }
+
+    this->pieces.push_back(this->king);
 }
 
 void Game::init(){
@@ -63,12 +76,60 @@ void Game::renderBoard(){
  SDL_RenderCopy(this->getRenderer(),  this->getBoard()->getTexture(), NULL, this->getBoard()->getDestiny());
 };
 
+void Game::checkChecks(){
+    if(this->getSelectedPiece() == this->king){
+
+        for(Piece* piece : this->pieces){
+
+            if( piece != this->king &&
+                 this->king->isAEnemyPiece(piece->getCoordinate(), this->board )){
+
+                piece->showMoveOptions(this->board);
+                for(SDL_Rect validSquare : piece->getValidSquares()){
+                    this->king->enemyPiecesValidSquares.push_back(validSquare);
+                }
+                piece->resetValidSquares();
+            }
+        }
+        king->showMoveOptions(this->board);
+        king->enemyPiecesValidSquares.clear();
+
+    }else{
+
+        Board boardCopy = this->board;
+        boardCopy.controlBoard[this->getSelectedPiece()->getCoordinate().y][this->getSelectedPiece()->getCoordinate().x] = '0';
+
+        //2)pegas todas as posicoes validas das peças inimigas da peça selecionada
+        for(Piece* piece : this->pieces){
+            if(this->getSelectedPiece()->isAEnemyPiece(piece->getCoordinate(), this->board)){
+
+                piece->showMoveOptions(boardCopy);
+                for(SDL_Rect validSquare : piece->getValidSquares()){
+                    this->king->enemyPiecesValidSquares.push_back(validSquare);
+                }
+                 piece->resetValidSquares();
+            }
+        }
+
+
+        if(!this->king->isOnCheck(this->king->getCoordinate(), boardCopy)){
+             this->getSelectedPiece()->showMoveOptions(this->board);
+        }else{
+            cout << "o rei ta em check mano" << endl;
+        }
+
+        king->enemyPiecesValidSquares.clear();
+
+    }
+};
+
 
 void Game::renderPieces(){
     for(Piece* piece : this->pieces){
         if(this->getSelectedPiece() == piece) continue;
         SDL_RenderCopy(this->getRenderer(), this->piecesTextures, piece->getOrigin(), piece->getDestiny());
     }
+
     //Sempre renderiza a peça selecionada por último para ela ficar por cima de todas
     if(this->getSelectedPiece()){
         SDL_RenderCopy(this->getRenderer(), this->piecesTextures, this->getSelectedPiece()->getOrigin(), this->getSelectedPiece()->getDestiny());

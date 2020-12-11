@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
                       mousePos = { event.motion.x, event.motion.y };
                       if (leftMouseButtonDown && game.getSelectedPiece()){
 
-                          game.getSelectedPiece()->showMoveOptions(game.getBoard());
+                          //game.getSelectedPiece()->showMoveOptions(game.getBoard());
+                          game.checkChecks();
 
                           game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
                           game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
@@ -105,19 +106,17 @@ int main(int argc, char *argv[])
                       game.setSelectedPiece(nullptr);
                     }
                     leftMouseButtonDown = false;
-
                     /*
-                    for(int i = 0;i<8;i++){
-                        for(int j = 0;j<8;j++){
-                             cout << game.getBoard()->controlBoard[i][j] << " ";
+                    for(int i = 0; i < 8; i++){
+                        for(int j = 0; j < 8; j++){
+                            cout << game.getBoard()->controlBoard[i][j] << " ";
                         }
                         cout << endl;
-                    }*/
+
+                    }
+                       cout << endl;*/
 
               }
-
-
-
           }
 
         SDL_Delay(1000/60);

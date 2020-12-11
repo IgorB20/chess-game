@@ -17,29 +17,29 @@ Pawn::Pawn(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
     }
 }
 
-void Pawn::showMoveOptions(Board* board){
+void Pawn::showMoveOptions(Board board){
     int i = 1;
     int j = 1;
 
-    if(board->controlBoard[i][j] == 'p' && this->isFirstMove == true)
+    if(board.controlBoard[i][j] == 'p' && this->isFirstMove == true)
         {
-         board->controlBoard[i+1][j] = 'x';
-         board->controlBoard[i+2][j] = 'x';
+         board.controlBoard[i+1][j] = 'x';
+         board.controlBoard[i+2][j] = 'x';
          isFirstMove = false;
         }   else
         {
-         board->controlBoard[i+1][j] = 'x';
+         board.controlBoard[i+1][j] = 'x';
         }
 
 
-    if(board->controlBoard[i][j] == 'P' && isFirstMove == true)
+    if(board.controlBoard[i][j] == 'P' && isFirstMove == true)
         {
-         board->controlBoard[i-1][j] = 'x';
-         board->controlBoard[i-2][j] = 'x';
+         board.controlBoard[i-1][j] = 'x';
+         board.controlBoard[i-2][j] = 'x';
          isFirstMove = false;
     }   else
     {
-     board->controlBoard[i-1][j] = 'x';
+     board.controlBoard[i-1][j] = 'x';
     }
 
 
@@ -47,7 +47,7 @@ void Pawn::showMoveOptions(Board* board){
     {
         for(j = 0; j <= 7; j++)
         {
-            std::cout << board->controlBoard[i][j];
+            std::cout << board.controlBoard[i][j];
         }
         std::cout << std::endl;
     }

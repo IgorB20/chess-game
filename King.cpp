@@ -19,8 +19,9 @@ King::King(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
 }
 
 
-void King::showMoveOptions(Board *board){
-    int squareSize = board->squareSize;
+
+void King::showMoveOptions(Board board){
+    int squareSize = board.squareSize;
 
     vector<SDL_Point> posssibleDirections = {
         {.x=0, .y=-1},
@@ -43,7 +44,7 @@ void King::showMoveOptions(Board *board){
             coluna += direction.x;
 
             if(this->isAValidCoordinate({.x=coluna, .y=linha}, board) &&
-                !this->isThereACheck(board, {.x=coluna, .y=linha})){
+                    !this->isOnCheck({.x=coluna, .y=linha}, board)){
 
                 int newY = (linha)*squareSize;
                 int newX = (coluna)*squareSize;
@@ -55,108 +56,21 @@ void King::showMoveOptions(Board *board){
     }
 }
 
-bool King::isThereACheck(Board *board, SDL_Point position){
-
-     int peca_frente_y = -1;
-     int rainha_y = -1;
-     bool teste = false;
-     //verticais pra cima do rei
-     for(int i=position.y; i>=0; i--){
-
-         if(board->controlBoard[i][position.x] != 'q' &&
-                board->controlBoard[i][position.x] != '0'){
-                peca_frente_y = i;
-         }
-         if(board->controlBoard[i][position.x] == 'q'){
-             rainha_y = i;
-            if( fabs(this->getCoordinate().y - i) <= 1 && i == position.y){
-                teste = false;
-            }else{
-                 teste = true;
-                 //return true;
-
-            }
-         }
-     }
-
-     if(peca_frente_y > -1)
-         if(fabs(position.y - peca_frente_y) < fabs(position.y - rainha_y)){
-             teste =  false;
-         }
-
-     if(teste) return teste;
 
 
-     peca_frente_y = -1;
-     rainha_y = -1;
-     //verticais pra baixo do rei
-     for(int i=position.y; i<8; i++){
+bool King::isOnCheck(SDL_Point position, Board board){
 
-         if(board->controlBoard[i][position.x] != 'q' &&
-                board->controlBoard[i][position.x] != '0'){
-                peca_frente_y = i;
-         }
-         if(board->controlBoard[i][position.x] == 'q'){
-             rainha_y = i;
-            if( fabs(this->getCoordinate().y - i) <= 1 && i == position.y){
-                teste = false;
-            }else{
-                 teste = true;
-                //return true;
-            }
-         }
-     }
+   int squareSize = board.squareSize;
+   int isCheck = false;
 
-    if(peca_frente_y > -1)
-         if(fabs(position.y - peca_frente_y) < fabs(position.y - rainha_y)){
-             teste =  false;
-         }
-
-    if(teste) return teste;
-
-
-    peca_frente_y = -1;
-    rainha_y = -1;
-    //horizontais pra direita do rei
-    for(int i=position.x; i<8; i++){
-
-        if(board->controlBoard[position.y][i] != 'q' &&
-               board->controlBoard[position.y][i] != '0'){
-               peca_frente_y = i;
+   for(SDL_Rect enemyPieceValidSquare : this->enemyPiecesValidSquares){
+        if(position.x*squareSize == enemyPieceValidSquare.x &&
+                position.y*squareSize == enemyPieceValidSquare.y){
+            isCheck = true;
+            break;
         }
-        if(board->controlBoard[position.y][i] == 'q'){
-            rainha_y = i;
-           if( fabs(this->getCoordinate().y - i) <= 1 && i == position.x){
-               teste = false;
-           }else{
-                teste = true;
-               //return true;
-           }
-        }
-    }
+   }
 
-   if(peca_frente_y > -1)
-        if(fabs(position.y - peca_frente_y) < fabs(position.y - rainha_y)){
-            teste =  false;
-        }
-
-
-
-
-     return teste;
-
-
-     //horizontais
-     /*
-      for(int j=0; j < 8; j++){
-
-              if(board->controlBoard[position.y][j] == 'q'){
-                 if( fabs(this->getCoordinate().x - j) <= 1 && j == position.x){
-                     return false;
-                 }else{
-                      return true;
-                 }
-              }
-      }*/
+   return isCheck;
 
 };

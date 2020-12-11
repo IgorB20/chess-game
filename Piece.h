@@ -23,10 +23,11 @@ class Piece{
     public:
 
         Piece(string color, SDL_Point initialCoordinate);
+        Piece() = default;
         virtual ~Piece() = default;
         void restorePosition(int squareSize);
-        bool isAEnemyPiece(SDL_Point coordinate, Board* board);
-        bool isAValidCoordinate(SDL_Point coordinate, Board* board);
+        bool isAEnemyPiece(SDL_Point coordinate, Board board);
+        bool isAValidCoordinate(SDL_Point coordinate, Board board);
         vector<SDL_Rect> getValidSquares();
         void addValidSquare(SDL_Rect square);
         void resetValidSquares();
@@ -37,9 +38,9 @@ class Piece{
         void setOrigin(SDL_Rect origin);
         SDL_Rect* getOrigin();
         bool isWhite();
-
+        bool isSpiked(Board board);
         //metodo que vai ser sobrescrito por cada peça
-        virtual void showMoveOptions(Board* board) = 0;
+        virtual void showMoveOptions(Board board) = 0;
 
 
 

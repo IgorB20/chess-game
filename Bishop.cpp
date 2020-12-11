@@ -16,9 +16,9 @@ Bishop::Bishop(string color, SDL_Point initialCoordinate, int squareSize) : Piec
     }
 }
 
-void Bishop::showMoveOptions(Board* board){
+void Bishop::showMoveOptions(Board board){
 
-    int squareSize = board->squareSize;
+    int squareSize = board.squareSize;
 
     vector<SDL_Point> posssibleDirections = {
         {.x=+1, .y=-1},
