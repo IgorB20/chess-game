@@ -18,38 +18,44 @@ Pawn::Pawn(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
 }
 
 void Pawn::showMoveOptions(Board* board){
-    int i = 1;
-    int j = 1;
 
-    if(board->controlBoard[i][j] == 'p' && this->isFirstMove == true)
-        {
-         board->controlBoard[i+1][j] = 'x';
-         board->controlBoard[i+2][j] = 'x';
-         isFirstMove = false;
-        }   else
-        {
-         board->controlBoard[i+1][j] = 'x';
+    vector<SDL_Point> posssiblePositions;
+    int squareSize = board->squareSize;
+
+    int linha = this->getCoordinate().y;
+    int coluna = this->getCoordinate().x;
+
+    int move1 = 1;
+    int move2 = 2;
+
+    if(this->isWhite()){
+        move1 = -1;
+        move2 = -2;
+    }
+    if(isFirstMove == true){
+        posssiblePositions = {
+            {.x=coluna, .y=linha+move1},
+            {.x=coluna, .y=linha+move2},
+        };
+        isFirstMove = false;
+        if(board->controlBoard[linha+move1][coluna+move1] != '0'  or  board->controlBoard[linha+move1][coluna-move1] != '0'){
+            posssiblePositions = {
+                        {.x=coluna, .y=linha+move1},
+                        {.x=coluna, .y=linha+move2},
+                        {.x=coluna+move1 , .y=linha+move1},
+                        {.x=coluna+move1 , .y=linha-move1},
+                    };
         }
+    }
 
-
-    if(board->controlBoard[i][j] == 'P' && isFirstMove == true)
-        {
-         board->controlBoard[i-1][j] = 'x';
-         board->controlBoard[i-2][j] = 'x';
-         isFirstMove = false;
-    }   else
-    {
-     board->controlBoard[i-1][j] = 'x';
+    for(SDL_Point position : posssiblePositions){
+        if(this->isAValidCoordinate({.x=position.x, .y=position.y}, board)){
+           int newY = (position.y)*squareSize;
+           int newX = (position.x)*squareSize;
+           this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+         }
     }
 
 
-    for (i = 0;i <= 7; i++)
-    {
-        for(j = 0; j <= 7; j++)
-        {
-            std::cout << board->controlBoard[i][j];
-        }
-        std::cout << std::endl;
-    }
 
 }
