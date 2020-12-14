@@ -15,7 +15,7 @@ class Game{
         vector<Piece*> pieces; //deixar publico por enquanto
         bool running;
 
-        King* king;//TESTEEE
+        vector<King*> kings;
         void checkChecks();
 
         Game();

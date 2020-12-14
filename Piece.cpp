@@ -78,6 +78,3 @@ SDL_Point Piece::getCoordinate(){
     return this->coordinate;
 };
 
-bool isSpiked(Board board){
-
-};

@@ -10,16 +10,23 @@
 Game::Game(){
     this->init();
 
-    //teste - inicializando rei das brancas
     for(int i = 0;i<8;i++){
         for(int j = 0;j<8;j++){
             if(this->board.controlBoard[i][j] == 'K'){
-                this->king = new King("white", {.x=j, .y=i},this->board.squareSize);
+                this->kings.push_back( new King("white", {.x=j, .y=i},this->board.squareSize) );
+            }
+
+            if(this->board.controlBoard[i][j] == 'k'){
+                this->kings.push_back( new King("black", {.x=j, .y=i},this->board.squareSize) );
             }
         }
     }
 
-    this->pieces.push_back(this->king);
+    for(King* king : this->kings){
+        this->pieces.push_back(king);
+    }
+
+
 }
 
 void Game::init(){
@@ -77,51 +84,118 @@ void Game::renderBoard(){
 };
 
 void Game::checkChecks(){
-    if(this->getSelectedPiece() == this->king){
 
-        for(Piece* piece : this->pieces){
-
-            if( piece != this->king &&
-                 this->king->isAEnemyPiece(piece->getCoordinate(), this->board )){
-
-                piece->showMoveOptions(this->board);
-                for(SDL_Rect validSquare : piece->getValidSquares()){
-                    this->king->enemyPiecesValidSquares.push_back(validSquare);
-                }
-                piece->resetValidSquares();
-            }
+    King * king = nullptr;
+    for(King* k : this->kings){
+        if(this->getSelectedPiece() == k){
+               king = k;
         }
-        king->showMoveOptions(this->board);
-        king->enemyPiecesValidSquares.clear();
-
-    }else{
-
-        Board boardCopy = this->board;
-        boardCopy.controlBoard[this->getSelectedPiece()->getCoordinate().y][this->getSelectedPiece()->getCoordinate().x] = '0';
-
-        //2)pegas todas as posicoes validas das peças inimigas da peça selecionada
-        for(Piece* piece : this->pieces){
-            if(this->getSelectedPiece()->isAEnemyPiece(piece->getCoordinate(), this->board)){
-
-                piece->showMoveOptions(boardCopy);
-                for(SDL_Rect validSquare : piece->getValidSquares()){
-                    this->king->enemyPiecesValidSquares.push_back(validSquare);
-                }
-                 piece->resetValidSquares();
-            }
-        }
-
-
-        if(!this->king->isOnCheck(this->king->getCoordinate(), boardCopy)){
-             this->getSelectedPiece()->showMoveOptions(this->board);
-        }else{
-            cout << "o rei ta em check mano" << endl;
-        }
-
-        king->enemyPiecesValidSquares.clear();
-
     }
+
+        if(king){
+            /*
+            for(Piece* piece : this->pieces){
+                if( piece != king &&
+                     king->isAEnemyPiece(piece->getCoordinate(), this->board )){
+
+                    Board boardCopy = this->board;
+                    boardCopy.controlBoard[king->getCoordinate().y][king->getCoordinate().x] = '0';
+
+                    piece->showMoveOptions(boardCopy);
+                    for(SDL_Rect validSquare : piece->getValidSquares()){
+                        king->enemyPiecesValidSquares.push_back(validSquare);
+                    }
+                    piece->resetValidSquares();
+                }
+            }*/
+            king->showMoveOptions(this->board);
+
+            //verify check after capture
+            Board boardCopy = this->board;
+
+            for(SDL_Rect validSquare : king->getValidSquares()){
+
+                for(Piece* piece : this->pieces){
+
+                    if(piece != king && king->isAEnemyPiece(piece->getCoordinate(), boardCopy )){
+                        boardCopy.controlBoard[king->getCoordinate().y][king->getCoordinate().x] = '0';
+
+                        if(king->isWhite()) boardCopy.controlBoard[validSquare.y/this->board.squareSize][validSquare.x/this->board.squareSize] = 'K';
+                        else boardCopy.controlBoard[validSquare.y/this->board.squareSize][validSquare.x/this->board.squareSize] = 'k';
+
+                        piece->showMoveOptions(boardCopy);
+
+                        for(SDL_Rect validSquare2 : piece->getValidSquares()){
+                            if(validSquare.x == validSquare2.x && validSquare.y == validSquare2.y){
+
+                               king->enemyPiecesValidSquares.push_back(validSquare2);
+                                cout << "check" << endl;
+
+                            }
+                        }
+
+                        piece->resetValidSquares();
+                        boardCopy = this->board;
+                    }
+
+                }
+
+
+            }
+
+            king->resetValidSquares();
+            king->showMoveOptions(this->board);
+            king->enemyPiecesValidSquares.clear();
+
+        }else{
+
+            cout << "mexendo outra peca" << endl;
+            King * friendKing = nullptr;
+            for(King* k : this->kings){
+                if(!this->getSelectedPiece()->isAEnemyPiece(k->getCoordinate(), this->board) ){
+                       friendKing = k;
+                }
+            }
+
+
+            Board boardCopy = this->board;
+            boardCopy.controlBoard[this->getSelectedPiece()->getCoordinate().y][this->getSelectedPiece()->getCoordinate().x] = '0';
+
+            //2)pegas todas as posicoes validas das peças inimigas da peça selecionada
+            for(Piece* piece : this->pieces){
+                if(this->getSelectedPiece()->isAEnemyPiece(piece->getCoordinate(), this->board)){
+
+                    piece->showMoveOptions(boardCopy);
+
+                        for(SDL_Rect validSquare : piece->getValidSquares()){
+                            if(friendKing)
+                                friendKing->enemyPiecesValidSquares.push_back(validSquare);
+                        }
+
+
+                     piece->resetValidSquares();
+                }
+            }
+
+            if(!friendKing){
+                this->getSelectedPiece()->showMoveOptions(this->board);
+                return;
+            }
+
+            if(!friendKing->isOnCheck(friendKing->getCoordinate(), boardCopy)){
+                 this->getSelectedPiece()->showMoveOptions(this->board);
+            }else{
+                cout << "o rei ta em check mano" << endl;
+            }
+
+            friendKing->enemyPiecesValidSquares.clear();
+
+        }
+
+
+
 };
+
 
 
 void Game::renderPieces(){

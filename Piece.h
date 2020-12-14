@@ -38,7 +38,7 @@ class Piece{
         void setOrigin(SDL_Rect origin);
         SDL_Rect* getOrigin();
         bool isWhite();
-        bool isSpiked(Board board);
+
         //metodo que vai ser sobrescrito por cada peça
         virtual void showMoveOptions(Board board) = 0;
 
