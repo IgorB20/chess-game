@@ -29,6 +29,7 @@ class Piece{
         bool isAEnemyPiece(SDL_Point coordinate, Board board);
         bool isAValidCoordinate(SDL_Point coordinate, Board board);
         vector<SDL_Rect> getValidSquares();
+         void setValidSquares(vector<SDL_Rect> squares);
         void addValidSquare(SDL_Rect square);
         void resetValidSquares();
         void setCoordinate(SDL_Point coordinate);

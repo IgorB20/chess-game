@@ -40,6 +40,10 @@ vector<SDL_Rect> Piece::getValidSquares(){
     return this->validSquares;
 };
 
+void Piece::setValidSquares(vector<SDL_Rect> squares){
+       this->validSquares = squares;
+};
+
 void Piece::addValidSquare(SDL_Rect square){
     this->validSquares.push_back(square);
 };

@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
                       if (leftMouseButtonDown && game.getSelectedPiece()){
 
                           //game.getSelectedPiece()->showMoveOptions(game.getBoard());
-                          game.checkChecks();
+                          //game.checkChecks();
 
                           game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
                           game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
                        for(Piece* piece : game.pieces){
                            if(SDL_PointInRect(&mousePos, piece->getDestiny())){
                                game.setSelectedPiece(piece);
+                               game.checkChecks();
                                clickOffset.x = mousePos.x - piece->getDestiny()->x;
                                clickOffset.y = mousePos.y - piece->getDestiny()->y;
                            }
