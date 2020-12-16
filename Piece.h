@@ -22,6 +22,8 @@ class Piece{
 
     public:
 
+        bool isFirstMove;
+
         Piece(string color, SDL_Point initialCoordinate);
         Piece() = default;
         virtual ~Piece() = default;

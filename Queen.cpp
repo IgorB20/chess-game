@@ -18,7 +18,7 @@ Queen::Queen(string color, SDL_Point initialCoordinate, int squareSize) : Piece(
 
 
 void Queen::showMoveOptions(Board board){
-    cout << "mostrando movimentos da rainha" << endl;
+
     int squareSize = board.squareSize;
 
     vector<SDL_Point> posssibleDirections = {

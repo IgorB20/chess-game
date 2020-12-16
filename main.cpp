@@ -81,6 +81,8 @@ int main(int argc, char *argv[])
 
                             if(SDL_PointInRect(&mousePos, &validSquare)){
 
+                                if(game.getSelectedPiece()->isFirstMove) game.getSelectedPiece()->isFirstMove = false;
+
                                 game.getSelectedPiece()->getDestiny()->x = validSquare.x;
                                 game.getSelectedPiece()->getDestiny()->y = validSquare.y;
 

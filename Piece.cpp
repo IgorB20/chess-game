@@ -7,6 +7,7 @@ Piece::Piece(string color, SDL_Point initialCoordinate){
     this->color = color;
     this->coordinate = initialCoordinate;
     this->validSquares = {};
+    this->isFirstMove = true;
 
 }
 

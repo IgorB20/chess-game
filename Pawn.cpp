@@ -18,38 +18,74 @@ Pawn::Pawn(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
 }
 
 void Pawn::showMoveOptions(Board board){
-    int i = 1;
-    int j = 1;
 
-    if(board.controlBoard[i][j] == 'p' && this->isFirstMove == true)
-        {
-         board.controlBoard[i+1][j] = 'x';
-         board.controlBoard[i+2][j] = 'x';
-         isFirstMove = false;
-        }   else
-        {
-         board.controlBoard[i+1][j] = 'x';
+    int squareSize = board.squareSize;
+
+    int linha = this->getCoordinate().y;
+    int coluna = this->getCoordinate().x;
+
+    this->checkDiagonalsCaptures(board);
+
+    if(this->isWhite()){
+
+        if(this->isFirstMove){
+            if(!this->isAEnemyPiece({.x = coluna, .y = linha-1}, board)){
+                this->addValidSquare({.x = coluna*squareSize, .y = (linha-1)*squareSize, .w=squareSize, .h=squareSize});
+            }
+
+            if(!this->isAEnemyPiece({.x = coluna, .y = linha-2}, board)){
+                this->addValidSquare({.x = coluna*squareSize, .y = (linha-2)*squareSize, .w=squareSize, .h=squareSize});
+            }
+
+
+        }else{
+           if(!this->isAEnemyPiece({.x = coluna, .y = linha-1}, board))
+                this->addValidSquare({.x = coluna*squareSize, .y = (linha-1)*squareSize, .w=squareSize, .h=squareSize});
         }
-
-
-    if(board.controlBoard[i][j] == 'P' && isFirstMove == true)
-        {
-         board.controlBoard[i-1][j] = 'x';
-         board.controlBoard[i-2][j] = 'x';
-         isFirstMove = false;
-    }   else
-    {
-     board.controlBoard[i-1][j] = 'x';
     }
 
+    if(!this->isWhite()){
+        if(this->isFirstMove){
+            if(!this->isAEnemyPiece({.x = coluna, .y = linha+1}, board)){
+                this->addValidSquare({.x = coluna*squareSize, .y = (linha+1)*squareSize, .w=squareSize, .h=squareSize});
+            }
 
-    for (i = 0;i <= 7; i++)
-    {
-        for(j = 0; j <= 7; j++)
-        {
-            std::cout << board.controlBoard[i][j];
+            if(!this->isAEnemyPiece({.x = coluna, .y = linha+2}, board)){
+                this->addValidSquare({.x = coluna*squareSize, .y = (linha+2)*squareSize, .w=squareSize, .h=squareSize});
+            }
+
+
+        }else{
+           if(!this->isAEnemyPiece({.x = coluna, .y = linha+1}, board))
+                this->addValidSquare({.x = coluna*squareSize, .y = (linha+1)*squareSize, .w=squareSize, .h=squareSize});
         }
-        std::cout << std::endl;
     }
 
 }
+
+void Pawn::checkDiagonalsCaptures(Board board){
+        int squareSize = board.squareSize;
+    int linha = this->getCoordinate().y;
+    int coluna = this->getCoordinate().x;
+
+    if(this->isWhite()){
+        if(this->isAEnemyPiece({.x = coluna+1, .y = linha-1}, board)){
+            this->addValidSquare({.x = (coluna+1)*squareSize, .y = (linha-1)*squareSize, .w=squareSize, .h=squareSize});
+        }
+        if(this->isAEnemyPiece({.x = coluna-1, .y = linha-1}, board)){
+            this->addValidSquare({.x = (coluna-1)*squareSize, .y = (linha-1)*squareSize, .w=squareSize, .h=squareSize});
+        }
+    }
+
+    if(!this->isWhite()){
+        if(this->isAEnemyPiece({.x = coluna+1, .y = linha+1}, board)){
+            this->addValidSquare({.x = (coluna+1)*squareSize, .y = (linha+1)*squareSize, .w=squareSize, .h=squareSize});
+        }
+        if(this->isAEnemyPiece({.x = coluna-1, .y = linha+1}, board)){
+            this->addValidSquare({.x = (coluna-1)*squareSize, .y = (linha+1)*squareSize, .w=squareSize, .h=squareSize});
+        }
+    }
+
+
+
+};
