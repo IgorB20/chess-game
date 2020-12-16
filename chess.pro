@@ -14,6 +14,7 @@ SOURCES += \
         Pawn.cpp \
         Piece.cpp \
         PiecesInitializer.cpp \
+        Rook.cpp \
         main.cpp
 
 # Default rules for deployment.
@@ -38,4 +39,5 @@ HEADERS += \
     Knight.h \
     Pawn.h \
     Piece.h \
-    PiecesInitializer.h
+    PiecesInitializer.h \
+    Rook.h

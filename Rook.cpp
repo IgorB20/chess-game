@@ -1,6 +1,19 @@
 #include <Rook.h>
 #include <iostream>
 
+Rook::Rook(string color, SDL_Point initialCoordinate, int squareSize) : Piece(color, initialCoordinate){
+    this->setDestiny({.x=initialCoordinate.x * squareSize,
+                      .y=initialCoordinate.y* squareSize,
+                      .w=50,
+                      .h=50
+                     });
+
+    if(this->isWhite()){
+        this->setOrigin({.x=860, .y=12, .w=204, .h=193});
+    }else{
+         this->setOrigin({.x=860, .y=225, .w=204, .h=193});
+    }
+}
 
 void Rook::showMoveOptions(Board *board){
     int squareSize = board->squareSize;
