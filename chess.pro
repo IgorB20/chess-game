@@ -15,6 +15,7 @@ SOURCES += \
         Pawn.cpp \
         Piece.cpp \
         PiecesInitializer.cpp \
+        Rook.cpp \
         Queen.cpp \
         main.cpp
 
@@ -42,4 +43,6 @@ HEADERS += \
     Pawn.h \
     Piece.h \
     PiecesInitializer.h \
+    Rook.h \
     Queen.h
+
