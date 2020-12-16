@@ -1,12 +1,14 @@
 #include <PiecesInitializer.h>
 #include <Pawn.h>
 #include <Knight.h>
+#include <Bishop.h>
 
 #include <iostream>
 
 void PiecesInitializer::initAll(Board board, vector<Piece*> &pieces){
     PiecesInitializer::initPawns(board, pieces);
     PiecesInitializer::initKnights(board, pieces);
+     PiecesInitializer::initBishops(board, pieces);
 }
 
 
@@ -34,6 +36,20 @@ void PiecesInitializer::initKnights(Board board, vector<Piece*> &pieces){
             }
             if(board.controlBoard[i][j] == 'h'){
                 pieces.push_back(new Knight("black", {.x=j, .y=i}, board.squareSize));
+            }
+        }
+    }
+};
+
+void PiecesInitializer::initBishops(Board board, vector<Piece*> &pieces){
+    for(int i = 0;i<8;i++){
+        for(int j = 0;j<8;j++){
+            if(board.controlBoard[i][j] == 'B'){
+                pieces.push_back(new Bishop("white", {.x=j,
+                                                       .y=i}, board.squareSize));
+            }
+            if(board.controlBoard[i][j] == 'b'){
+                pieces.push_back(new Bishop("black", {.x=j, .y=i}, board.squareSize));
             }
         }
     }
