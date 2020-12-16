@@ -16,9 +16,9 @@ Bishop::Bishop(string color, SDL_Point initialCoordinate, int squareSize) : Piec
     }
 }
 
-void Bishop::showMoveOptions(Board* board){
+void Bishop::showMoveOptions(Board board){
 
-    int squareSize = board->squareSize;
+    int squareSize = board.squareSize;
 
     vector<SDL_Point> posssibleDirections = {
         {.x=+1, .y=-1},
@@ -40,6 +40,8 @@ void Bishop::showMoveOptions(Board* board){
                 int newY = (linha)*squareSize;
                 int newX = (coluna)*squareSize;
                 this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+
+                if(this->isAEnemyPiece({.x=coluna, .y=linha}, board)) stop = true;
             }else{
                 stop = true;
             }

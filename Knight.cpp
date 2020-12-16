@@ -19,10 +19,9 @@ Knight::Knight(string color, SDL_Point initialCoordinate, int squareSize) : Piec
 }
 
 
+void Knight::showMoveOptions(Board board){
 
-void Knight::showMoveOptions(Board *board){
-
-    int squareSize = board->squareSize;
+    int squareSize = board.squareSize;
 
     int linha = this->getCoordinate().y;
     int coluna = this->getCoordinate().x;

@@ -7,7 +7,7 @@ class Pawn : public Piece {
         bool isFirstMove = true;
         Pawn(string color, SDL_Point initialCoordinate, int squareSize);
         ~Pawn() = default;
-        void showMoveOptions(Board *board);
+        void showMoveOptions(Board board);
 
 };
 

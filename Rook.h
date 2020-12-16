@@ -6,7 +6,7 @@ class Rook : public Piece{
     public:
         Rook(string color, SDL_Point initialCoordinate, int squareSize);
         ~Rook() = default;
-        void showMoveOptions(Board *board);
+        void showMoveOptions(Board board);
 };
 
 #endif // ROOK_H

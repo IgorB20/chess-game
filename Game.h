@@ -7,11 +7,16 @@
 #include <Piece.h>
 #include <vector>
 
+#include <King.h>
+
 class Game{
     public:
 
         vector<Piece*> pieces; //deixar publico por enquanto
         bool running;
+
+        vector<King*> kings;
+        void checkChecks();
 
         Game();
         void renderBoard();

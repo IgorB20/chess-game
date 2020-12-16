@@ -44,7 +44,8 @@ int main(int argc, char *argv[])
                       mousePos = { event.motion.x, event.motion.y };
                       if (leftMouseButtonDown && game.getSelectedPiece()){
 
-                          game.getSelectedPiece()->showMoveOptions(game.getBoard());
+                          //game.getSelectedPiece()->showMoveOptions(game.getBoard());
+                          //game.checkChecks();
 
                           game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
                           game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
                        for(Piece* piece : game.pieces){
                            if(SDL_PointInRect(&mousePos, piece->getDestiny())){
                                game.setSelectedPiece(piece);
+                               game.checkChecks();
                                clickOffset.x = mousePos.x - piece->getDestiny()->x;
                                clickOffset.y = mousePos.y - piece->getDestiny()->y;
                            }
@@ -88,6 +90,7 @@ int main(int argc, char *argv[])
                                  game.getSelectedPiece()->setCoordinate({.x =validSquare.x/game.getBoard()->squareSize,
                                                                         .y=validSquare.y/game.getBoard()->squareSize
                                                                       });
+                                 cout << game.getSelectedPiece()->getCoordinate().y << ", " << game.getSelectedPiece()->getCoordinate().x << endl;
 
                                  game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
 
@@ -105,19 +108,17 @@ int main(int argc, char *argv[])
                       game.setSelectedPiece(nullptr);
                     }
                     leftMouseButtonDown = false;
-
                     /*
-                    for(int i = 0;i<8;i++){
-                        for(int j = 0;j<8;j++){
-                             cout << game.getBoard()->controlBoard[i][j] << " ";
+                    for(int i = 0; i < 8; i++){
+                        for(int j = 0; j < 8; j++){
+                            cout << game.getBoard()->controlBoard[i][j] << " ";
                         }
                         cout << endl;
-                    }*/
+
+                    }
+                       cout << endl;*/
 
               }
-
-
-
           }
 
         SDL_Delay(1000/60);

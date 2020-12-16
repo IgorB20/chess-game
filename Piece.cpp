@@ -10,15 +10,23 @@ Piece::Piece(string color, SDL_Point initialCoordinate){
 
 }
 
-bool Piece::isAValidCoordinate(SDL_Point coordinate, Board* board){
+bool Piece::isAValidCoordinate(SDL_Point coordinate, Board board){
     if(coordinate.x >=0 && coordinate.x < 8 && coordinate.y >=0 && coordinate.y < 8){
-        if((this->isWhite() && !isupper(board->controlBoard[coordinate.y][coordinate.x])) ||
-                (!this->isWhite() && isupper(board->controlBoard[coordinate.y][coordinate.x])) ||
-                board->controlBoard[coordinate.y][coordinate.x] == '0'){
+        if(this->isAEnemyPiece(coordinate, board) ||
+                board.controlBoard[coordinate.y][coordinate.x] == '0'){
             return true;
         }
     }
 
+
+    return false;
+};
+
+bool Piece::isAEnemyPiece(SDL_Point coordinate, Board board){
+    if((this->isWhite() && !isupper(board.controlBoard[coordinate.y][coordinate.x]) && board.controlBoard[coordinate.y][coordinate.x] != '0') ||
+            (!this->isWhite() && isupper(board.controlBoard[coordinate.y][coordinate.x]))){
+        return true;
+    }
 
     return false;
 };
@@ -30,6 +38,10 @@ void Piece::restorePosition(int squareSize){
 
 vector<SDL_Rect> Piece::getValidSquares(){
     return this->validSquares;
+};
+
+void Piece::setValidSquares(vector<SDL_Rect> squares){
+       this->validSquares = squares;
 };
 
 void Piece::addValidSquare(SDL_Rect square){
@@ -69,3 +81,4 @@ void Piece::setCoordinate(SDL_Point coordinate){
 SDL_Point Piece::getCoordinate(){
     return this->coordinate;
 };
+

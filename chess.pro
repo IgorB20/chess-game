@@ -11,6 +11,7 @@ SOURCES += \
         Bishop.cpp \
         Board.cpp \
         Game.cpp \
+        King.cpp \
         Knight.cpp \
         Pawn.cpp \
         Piece.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     Bishop.h \
     Board.h \
     Game.h \
+    King.h \
     Knight.h \
     Pawn.h \
     Piece.h \

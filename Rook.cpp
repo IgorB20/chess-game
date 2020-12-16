@@ -15,8 +15,8 @@ Rook::Rook(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
     }
 }
 
-void Rook::showMoveOptions(Board *board){
-    int squareSize = board->squareSize;
+void Rook::showMoveOptions(Board board){
+    int squareSize = board.squareSize;
 
     vector<SDL_Point> posssibleDirections = {
         {.x=0, .y=-1},
@@ -38,6 +38,9 @@ void Rook::showMoveOptions(Board *board){
                 int newY = (linha)*squareSize;
                 int newX = (coluna)*squareSize;
                 this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
+
+                if(this->isAEnemyPiece({.x=coluna, .y=linha}, board)) stop = true;
+
             }else{
                 stop = true;
             }

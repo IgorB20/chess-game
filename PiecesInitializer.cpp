@@ -4,6 +4,7 @@
 #include <Rook.h>
 #include <Bishop.h>
 #include <Queen.h>
+#include <King.h>
 
 
 #include <iostream>
@@ -11,10 +12,9 @@
 void PiecesInitializer::initAll(Board board, vector<Piece*> &pieces){
     PiecesInitializer::initPawns(board, pieces);
     PiecesInitializer::initKnights(board, pieces);
+    PiecesInitializer::initBishops(board, pieces);
+    PiecesInitializer::initQueens(board, pieces);
     PiecesInitializer::initRooks(board, pieces);
-     PiecesInitializer::initBishops(board, pieces);
-     PiecesInitializer::initQueens(board, pieces);
-
 }
 
 
@@ -89,3 +89,5 @@ void PiecesInitializer::initQueens(Board board, vector<Piece*> &pieces){
         }
     }
 };
+
+
