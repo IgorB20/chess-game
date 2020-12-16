@@ -106,12 +106,13 @@ int main(int argc, char *argv[])
                     }
                     leftMouseButtonDown = false;
 
+                    /*
                     for(int i = 0;i<8;i++){
                         for(int j = 0;j<8;j++){
                              cout << game.getBoard()->controlBoard[i][j] << " ";
                         }
                         cout << endl;
-                    }
+                    }*/
 
               }
 
