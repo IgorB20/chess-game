@@ -7,7 +7,7 @@ class Queen : public Piece{
     public:
         Queen(string color, SDL_Point initialCoordinate, int squareSize);
         ~Queen() = default;
-        void showMoveOptions(Board *board);
+        void showMoveOptions(Board board);
 };
 
 #endif // QUEEN_H

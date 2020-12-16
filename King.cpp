@@ -1,7 +1,10 @@
-#include <Queen.h>
+#include <King.h>
+
 #include <iostream>
 
-Queen::Queen(string color, SDL_Point initialCoordinate, int squareSize) : Piece(color, initialCoordinate){
+#include <math.h>
+
+King::King(string color, SDL_Point initialCoordinate, int squareSize) : Piece(color, initialCoordinate){
     this->setDestiny({.x=initialCoordinate.x*squareSize,
                       .y=initialCoordinate.y*squareSize,
                       .w=50,
@@ -9,15 +12,15 @@ Queen::Queen(string color, SDL_Point initialCoordinate, int squareSize) : Piece(
                      });
 
     if(this->isWhite()){
-        this->setOrigin({.x=220, .y=12, .w=204, .h=193});
+        this->setOrigin({.x=6, .y=12, .w=204, .h=193});
     }else{
-         this->setOrigin({.x=220, .y=225, .w=204, .h=193});
+         this->setOrigin({.x=6, .y=225, .w=204, .h=193});
     }
 }
 
 
 
-void Queen::showMoveOptions(Board board){
+void King::showMoveOptions(Board board){
     int squareSize = board.squareSize;
 
     vector<SDL_Point> posssibleDirections = {
@@ -31,32 +34,43 @@ void Queen::showMoveOptions(Board board){
         {.x=+1, .y=+1},
     };
 
-    bool stop = false;
+
     int linha = this->getCoordinate().y;
     int coluna = this->getCoordinate().x;
 
     for(SDL_Point direction : posssibleDirections){
-        while(!stop){
+
             linha += direction.y;
             coluna += direction.x;
-            if(this->isAValidCoordinate({.x=coluna, .y=linha}, board)){
+
+            if(this->isAValidCoordinate({.x=coluna, .y=linha}, board) &&
+                    !this->isOnCheck({.x=coluna, .y=linha}, board)){
 
                 int newY = (linha)*squareSize;
                 int newX = (coluna)*squareSize;
                 this->addValidSquare({.x = newX, .y = newY, .w=squareSize, .h=squareSize});
-
-                if(this->isAEnemyPiece({.x=coluna, .y=linha}, board)) stop = true;
-
-            }else{
-                stop = true;
             }
-        }
 
-        stop = false;
         linha = this->getCoordinate().y;
         coluna = this->getCoordinate().x;
-
-
     }
-
 }
+
+
+
+bool King::isOnCheck(SDL_Point position, Board board){
+
+   int squareSize = board.squareSize;
+   int isCheck = false;
+
+   for(SDL_Rect enemyPieceValidSquare : this->enemyPiecesValidSquares){
+        if(position.x*squareSize == enemyPieceValidSquare.x &&
+                position.y*squareSize == enemyPieceValidSquare.y){
+            isCheck = true;
+            break;
+        }
+   }
+
+   return isCheck;
+
+};
