@@ -157,6 +157,7 @@ void Game::checkChecks(){
 
             for(SDL_Rect validSquare : this->selectedPiece->getValidSquares()){
                 boardCopy2.controlBoard[validSquare.y/squareSize][validSquare.x/squareSize] = pieceIdentifier;
+
                 for(Piece* piece : this->pieces){
                     if(this->getSelectedPiece()->isAEnemyPiece(piece->getCoordinate(), this->board)){
 
@@ -179,13 +180,11 @@ void Game::checkChecks(){
 
                     }
                 }
-                vector<SDL_Rect> teste = friendKing->enemyPiecesValidSquares;
-                friendKing->enemyPiecesValidSquares = kingBackup;
+
                 if(!friendKing->isOnCheck(friendKing->getCoordinate(), this->board)){
                     newSquares.push_back(validSquare);
                 }
-                kingBackup = {};
-                //friendKing->enemyPiecesValidSquares = teste;
+                friendKing->enemyPiecesValidSquares.clear();
                 boardCopy2 = boardCopy;
             }
 
@@ -197,7 +196,7 @@ void Game::checkChecks(){
                 this->getSelectedPiece()->showMoveOptions(this->board);
                 return;
             }*/
-
+            friendKing->enemyPiecesValidSquares = kingBackup;
             if(friendKing->isOnCheck(friendKing->getCoordinate(), this->board)){
                 this->getSelectedPiece()->resetValidSquares();
                 cout << "o rei ta xeque" << endl;

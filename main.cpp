@@ -90,6 +90,7 @@ int main(int argc, char *argv[])
                                  game.getSelectedPiece()->setCoordinate({.x =validSquare.x/game.getBoard()->squareSize,
                                                                         .y=validSquare.y/game.getBoard()->squareSize
                                                                       });
+                                 cout << game.getSelectedPiece()->getCoordinate().y << ", " << game.getSelectedPiece()->getCoordinate().x << endl;
 
                                  game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
 
