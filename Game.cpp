@@ -115,8 +115,42 @@ bool Game::castle( SDL_Point mousePos){
                    this->getBoard()->update(oldCoordinate2, king->castleRook->getCoordinate());
 
                     king->isCastlePossible = false;
+                    king->castleRook->isFirstMove = false;
                     king->castleRook = nullptr;
                     king->castleSquare = {};
+                    king->isFirstMove = false;
+                    return true;
+                }
+            }
+
+            //grande roque
+            if(king->isBigCastlePossible && king->bigCastleRook){
+
+                if(SDL_PointInRect(&mousePos, &king->bigCastleSquare)){
+                    cout << "fazendo o grand roque" << endl;
+
+                     //ATUALIZANDO COORDENADA DO REI
+                    king->updatePosition({.x=(king->getCoordinate().x+((2*king->castleDirection)*-1))*board.squareSize,
+                                          .y=king->getDestiny()->y});
+                    SDL_Point oldCoordinate = king->getCoordinate();
+                    king->setCoordinate({.x =king->bigCastleSquare.x/this->getBoard()->squareSize,
+                                                           .y=king->bigCastleSquare.y/this->getBoard()->squareSize
+                                                         });
+                    this->getBoard()->update(oldCoordinate, king->getCoordinate());
+
+                    //ATUALIZANDO COORDENADA Da TORRE
+                   king->bigCastleRook->updatePosition({.x=(king->getCoordinate().x-((1*king->castleDirection)*-1))*board.squareSize,
+                                         .y=king->bigCastleRook->getDestiny()->y});
+                   SDL_Point oldCoordinate2 = king->bigCastleRook->getCoordinate();
+                   king->bigCastleRook->setCoordinate({.x =king->getCoordinate().x-((1*king->castleDirection)*-1),
+                                                          .y=king->bigCastleRook->getCoordinate().y
+                                                        });
+                   this->getBoard()->update(oldCoordinate2, king->bigCastleRook->getCoordinate());
+
+                    king->isBigCastlePossible = false;
+                    king->bigCastleRook->isFirstMove = false;
+                    king->bigCastleRook = nullptr;
+                    king->bigCastleSquare = {};
                     king->isFirstMove = false;
                     return true;
                 }
@@ -180,6 +214,7 @@ void Game::checkChecks(){
             king->resetValidSquares();
             king->showMoveOptions(this->board);
             king->checkCastle(this->pieces, this->board);
+            king->checkBigCastle(this->pieces, this->board);
             //cout << king->isOnCheck(king->getCoordinate(), this->board) << endl;
             king->enemyPiecesValidSquares.clear();
 

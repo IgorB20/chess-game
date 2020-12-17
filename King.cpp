@@ -136,3 +136,63 @@ void King::checkCastle(vector<Piece*> pieces, Board board){
 
 
 };
+
+void King::checkBigCastle(vector<Piece*> pieces, Board board){
+    this->bigCastleRook = nullptr;
+    this->isBigCastlePossible = false;
+    this->bigCastleSquare = {};
+
+    int direction = -1*this->castleDirection;
+
+    int linha = this->getCoordinate().y;
+    int coluna = this->getCoordinate().x + (2*direction);
+
+    if(!this->isFirstMove)  return;
+    if(this->isOnCheck(this->getCoordinate(), board)) return;
+    if(board.controlBoard[linha][coluna] != '0') return;
+    if(board.controlBoard[linha][coluna-(1*direction)] != '0') return;
+    if(board.controlBoard[linha][coluna+(1*direction)] != '0') return;
+
+
+    int teste = false;
+    for(Piece* piece : pieces){
+        if(this->isAEnemyPiece(piece->getCoordinate(), board)){
+            piece->showMoveOptions(board);
+            for(SDL_Rect validSquare : piece->getValidSquares()){
+                if((validSquare.y/board.squareSize == linha && validSquare.x/board.squareSize == coluna) ||
+                 (validSquare.y/board.squareSize == linha && validSquare.x/board.squareSize == coluna-(1*direction))
+                ){
+                    teste = true;
+
+                }
+            }
+
+           piece->resetValidSquares();
+           if(teste) break;
+        }
+
+        if(piece->getCoordinate().x == (coluna+(2*direction))) cout << "foi" << endl;
+
+        if(piece->getCoordinate().x == (coluna+(2*direction)) &&
+                piece->getCoordinate().y == linha &&
+                    piece->isFirstMove){
+
+            if(board.controlBoard[linha][coluna+(2*direction)] == this->castleRookIdentifier){
+                cout << "Voce pode fazer o grande roque" << endl;
+                this->bigCastleRook = piece;
+                this->isBigCastlePossible = true;
+                this->bigCastleSquare = {
+                            .x =(coluna)*board.squareSize,
+                            .y= linha*board.squareSize,
+                            .w=50,
+                            .h=50
+                  };
+
+            }else{
+                isBigCastlePossible = false;
+            }
+        }
+    }
+
+
+};
