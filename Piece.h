@@ -27,6 +27,7 @@ class Piece{
         Piece(string color, SDL_Point initialCoordinate);
         Piece() = default;
         virtual ~Piece() = default;
+        void updatePosition(SDL_Rect position);
         void restorePosition(int squareSize);
         bool isAEnemyPiece(SDL_Point coordinate, Board board);
         bool isAValidCoordinate(SDL_Point coordinate, Board board);

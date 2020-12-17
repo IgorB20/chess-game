@@ -43,10 +43,6 @@ int main(int argc, char *argv[])
                   case SDL_MOUSEMOTION:
                       mousePos = { event.motion.x, event.motion.y };
                       if (leftMouseButtonDown && game.getSelectedPiece()){
-
-                          //game.getSelectedPiece()->showMoveOptions(game.getBoard());
-                          //game.checkChecks();
-
                           game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
                           game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
                        }
@@ -73,35 +69,40 @@ int main(int argc, char *argv[])
                     if(game.getSelectedPiece()){
 
 
+
+
+
                         if(game.getSelectedPiece()->getValidSquares().size() == 0){
                             game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
                         }
 
-                        for(SDL_Rect validSquare : game.getSelectedPiece()->getValidSquares()){
+                        if(!game.castle(mousePos)){
+                            for(SDL_Rect validSquare : game.getSelectedPiece()->getValidSquares()){
 
-                            if(SDL_PointInRect(&mousePos, &validSquare)){
+                                if(SDL_PointInRect(&mousePos, &validSquare)){
 
-                                if(game.getSelectedPiece()->isFirstMove) game.getSelectedPiece()->isFirstMove = false;
+                                    if(game.getSelectedPiece()->isFirstMove) game.getSelectedPiece()->isFirstMove = false;
 
-                                game.getSelectedPiece()->getDestiny()->x = validSquare.x;
-                                game.getSelectedPiece()->getDestiny()->y = validSquare.y;
+                                    game.getSelectedPiece()->updatePosition(validSquare);
 
+                                     SDL_Point oldCoordinate = game.getSelectedPiece()->getCoordinate();
 
-                                SDL_Point oldCoordinate = game.getSelectedPiece()->getCoordinate();
+                                     game.getSelectedPiece()->setCoordinate({.x =validSquare.x/game.getBoard()->squareSize,
+                                                                            .y=validSquare.y/game.getBoard()->squareSize
+                                                                          });
+                                     cout << game.getSelectedPiece()->getCoordinate().y << ", " << game.getSelectedPiece()->getCoordinate().x << endl;
 
-                                 game.getSelectedPiece()->setCoordinate({.x =validSquare.x/game.getBoard()->squareSize,
-                                                                        .y=validSquare.y/game.getBoard()->squareSize
-                                                                      });
-                                 cout << game.getSelectedPiece()->getCoordinate().y << ", " << game.getSelectedPiece()->getCoordinate().x << endl;
+                                     game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
 
-                                 game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
+                                     break;
 
-                                 break;
+                                }else{
 
-                            }else{
-                                game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
+                                    game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
+                                }
                             }
                         }
+
 
                       game.getSelectedPiece()->resetValidSquares();
 
@@ -109,7 +110,9 @@ int main(int argc, char *argv[])
 
                       game.setSelectedPiece(nullptr);
                     }
+
                     leftMouseButtonDown = false;
+
                     /*
                     for(int i = 0; i < 8; i++){
                         for(int j = 0; j < 8; j++){

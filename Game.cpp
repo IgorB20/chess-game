@@ -9,7 +9,21 @@
 
 Game::Game(){
     this->init();
+}
 
+void Game::init(){
+    if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
+        cout << SDL_GetError() << endl;
+
+    this->running = true;
+    this->initWindow();
+    this->renderer = SDL_CreateRenderer(this->getWindow(), -1, 0);
+    this->board = {this->getRenderer()};
+    this->piecesTextures = IMG_LoadTexture(this->getRenderer(), "assets/images/pieces.png");
+
+    PiecesInitializer::initAll(this->board, this->pieces);
+
+    //inicializando reis - COLOCAR ISSO NUMA FUNÇÃO
     for(int i = 0;i<8;i++){
         for(int j = 0;j<8;j++){
             if(this->board.controlBoard[i][j] == 'K'){
@@ -25,21 +39,6 @@ Game::Game(){
     for(King* king : this->kings){
         this->pieces.push_back(king);
     }
-
-
-}
-
-void Game::init(){
-    if(SDL_Init(SDL_INIT_EVERYTHING) < 0)
-        cout << SDL_GetError() << endl;
-
-    this->running = true;
-    this->initWindow();
-    this->renderer = SDL_CreateRenderer(this->getWindow(), -1, 0);
-    this->board = {this->getRenderer()};
-    this->piecesTextures = IMG_LoadTexture(this->getRenderer(), "assets/images/pieces.png");
-
-    PiecesInitializer::initAll(this->board, this->pieces);
 }
 
 void Game::initWindow(){
@@ -83,6 +82,50 @@ void Game::renderBoard(){
  SDL_RenderCopy(this->getRenderer(),  this->getBoard()->getTexture(), NULL, this->getBoard()->getDestiny());
 };
 
+bool Game::castle( SDL_Point mousePos){
+    King * king = nullptr;
+    for(King* k : this->kings){
+        if(this->getSelectedPiece() == k){
+               king = k;
+        }
+    }
+
+        if(king){
+            if(king->isCastlePossible && king->castleRook){
+
+                if(SDL_PointInRect(&mousePos, &king->castleSquare)){
+                    cout << "fazendo o rock" << endl;
+
+                     //ATUALIZANDO COORDENADA DO REI
+                    king->updatePosition({.x=(king->getCoordinate().x+(2*king->castleDirection))*board.squareSize,
+                                          .y=king->getDestiny()->y});
+                    SDL_Point oldCoordinate = king->getCoordinate();
+                    king->setCoordinate({.x =king->castleSquare.x/this->getBoard()->squareSize,
+                                                           .y=king->castleSquare.y/this->getBoard()->squareSize
+                                                         });
+                    this->getBoard()->update(oldCoordinate, king->getCoordinate());
+
+                    //ATUALIZANDO COORDENADA Da TORRE
+                   king->castleRook->updatePosition({.x=(king->getCoordinate().x-(1*king->castleDirection))*board.squareSize,
+                                         .y=king->castleRook->getDestiny()->y});
+                   SDL_Point oldCoordinate2 = king->castleRook->getCoordinate();
+                   king->castleRook->setCoordinate({.x =king->getCoordinate().x-(1*king->castleDirection),
+                                                          .y=king->castleRook->getCoordinate().y
+                                                        });
+                   this->getBoard()->update(oldCoordinate2, king->castleRook->getCoordinate());
+
+                    king->isCastlePossible = false;
+                    king->castleRook = nullptr;
+                    king->castleSquare = {};
+                    king->isFirstMove = false;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+};
+
 void Game::checkChecks(){
 
     King * king = nullptr;
@@ -93,6 +136,7 @@ void Game::checkChecks(){
     }
 
         if(king){
+
 
             king->showMoveOptions(this->board);
 
@@ -112,12 +156,12 @@ void Game::checkChecks(){
                         piece->showMoveOptions(boardCopy);
 
                         for(SDL_Rect validSquare2 : piece->getValidSquares()){
-                            if(validSquare.x == validSquare2.x && validSquare.y == validSquare2.y){
+                            //if(validSquare.x == validSquare2.x && validSquare.y == validSquare2.y){
 
                                king->enemyPiecesValidSquares.push_back(validSquare2);
-                                cout << "check" << endl;
+                                //cout << "check" << endl;
 
-                            }
+                            //}
                         }
 
                         piece->resetValidSquares();
@@ -129,8 +173,14 @@ void Game::checkChecks(){
 
             }
 
+
+
+
+
             king->resetValidSquares();
             king->showMoveOptions(this->board);
+            king->checkCastle(this->pieces, this->board);
+            //cout << king->isOnCheck(king->getCoordinate(), this->board) << endl;
             king->enemyPiecesValidSquares.clear();
 
         }else{
@@ -141,6 +191,11 @@ void Game::checkChecks(){
                 if(!this->getSelectedPiece()->isAEnemyPiece(k->getCoordinate(), this->board) ){
                        friendKing = k;
                 }
+            }
+
+            if(!friendKing){
+                this->getSelectedPiece()->showMoveOptions(this->board);
+                return;
             }
 
 
@@ -190,12 +245,6 @@ void Game::checkChecks(){
 
 
 
-
-            /*
-            if(!friendKing){
-                this->getSelectedPiece()->showMoveOptions(this->board);
-                return;
-            }*/
             friendKing->enemyPiecesValidSquares = kingBackup;
             if(friendKing->isOnCheck(friendKing->getCoordinate(), this->board)){
                 this->getSelectedPiece()->resetValidSquares();

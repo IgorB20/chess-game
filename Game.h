@@ -25,6 +25,7 @@ class Game{
         void end();
         bool isRunning();
         void checkCapture();
+        bool castle(SDL_Point mousePos);
         void setSelectedPiece(Piece* piece);
         Piece* getSelectedPiece();
         SDL_Renderer* getRenderer();

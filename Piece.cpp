@@ -32,6 +32,11 @@ bool Piece::isAEnemyPiece(SDL_Point coordinate, Board board){
     return false;
 };
 
+void Piece::updatePosition(SDL_Rect position){
+    this->getDestiny()->x = position.x;
+    this->getDestiny()->y = position.y;
+};
+
 void Piece::restorePosition(int squareSize){
     this->getDestiny()->x = this->getCoordinate().x*squareSize;
     this->getDestiny()->y = this->getCoordinate().y*squareSize;
