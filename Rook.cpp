@@ -13,6 +13,8 @@ Rook::Rook(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
     }else{
          this->setOrigin({.x=860, .y=225, .w=204, .h=193});
     }
+
+    this->algebraicIdentifier = 'T';
 }
 
 void Rook::showMoveOptions(Board board){

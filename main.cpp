@@ -32,6 +32,30 @@ int main(int argc, char *argv[])
         game.renderPieces();
         SDL_RenderPresent(game.getRenderer());
 
+        if((!game.isWhiteTurn && !game.bot.isWhite) || (game.isWhiteTurn && game.bot.isWhite)){
+            cout << "hm" << endl;
+
+            game.bot.choosePiece(game.getBoard(), game.pieces);
+            SDL_Point oldCoordinate = game.bot.selectedPiece->getCoordinate();
+            game.bot.chooseMove(game.getBoard());
+
+            game.registerPlay(game.bot.selectedPiece);
+
+            game.getBoard()->update(oldCoordinate, game.bot.selectedPiece->getCoordinate());
+
+            game.updateTurn();
+            game.bot.selectedPiece = nullptr;
+
+            for(int i = 0; i < 8; i++){
+                for(int j = 0; j < 8; j++){
+                    cout << game.getBoard()->controlBoard[i][j] << " ";
+                }
+                cout << endl;
+
+            }
+               cout << endl;
+        }
+
           while (SDL_PollEvent(&event)){
 
 
@@ -43,8 +67,9 @@ int main(int argc, char *argv[])
                   case SDL_MOUSEMOTION:
                       mousePos = { event.motion.x, event.motion.y };
                       if (leftMouseButtonDown && game.getSelectedPiece()){
-                          game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
-                          game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
+                          game.getSelectedPiece()->updatePosition({.x=mousePos.x - clickOffset.x, .y=mousePos.y - clickOffset.y});
+                          //game.getSelectedPiece()->getDestiny()->x = mousePos.x - clickOffset.x;
+                          //game.getSelectedPiece()->getDestiny()->y = mousePos.y - clickOffset.y;
                        }
                       break;
 
@@ -54,6 +79,8 @@ int main(int argc, char *argv[])
                        leftMouseButtonDown = true;
 
                        for(Piece* piece : game.pieces){
+                           if((piece->isWhite() && !game.isWhiteTurn) || (!piece->isWhite() && game.isWhiteTurn)) continue;
+
                            if(SDL_PointInRect(&mousePos, piece->getDestiny())){
                                game.setSelectedPiece(piece);
                                game.checkChecks();
@@ -68,12 +95,9 @@ int main(int argc, char *argv[])
                    case SDL_MOUSEBUTTONUP:
                     if(game.getSelectedPiece()){
 
-
-
-
-
                         if(game.getSelectedPiece()->getValidSquares().size() == 0){
                             game.getSelectedPiece()->restorePosition(game.getBoard()->squareSize);
+
                         }
 
                         if(!game.castle(mousePos)){
@@ -90,9 +114,18 @@ int main(int argc, char *argv[])
                                      game.getSelectedPiece()->setCoordinate({.x =validSquare.x/game.getBoard()->squareSize,
                                                                             .y=validSquare.y/game.getBoard()->squareSize
                                                                           });
-                                     cout << game.getSelectedPiece()->getCoordinate().y << ", " << game.getSelectedPiece()->getCoordinate().x << endl;
+
 
                                      game.getBoard()->update(oldCoordinate, game.getSelectedPiece()->getCoordinate());
+
+                                     game.getSelectedPiece()->resetValidSquares();
+
+                                     game.registerPlay(game.getSelectedPiece());
+                                     //game.checkMate();
+
+                                     game.updateTurn();
+
+                                     //BOT
 
                                      break;
 
@@ -104,16 +137,13 @@ int main(int argc, char *argv[])
                         }
 
 
-                      game.getSelectedPiece()->resetValidSquares();
 
-                      game.checkCapture();
-
-                      game.setSelectedPiece(nullptr);
                     }
 
                     leftMouseButtonDown = false;
+                    game.setSelectedPiece(nullptr);
 
-                    /*
+
                     for(int i = 0; i < 8; i++){
                         for(int j = 0; j < 8; j++){
                             cout << game.getBoard()->controlBoard[i][j] << " ";
@@ -121,7 +151,7 @@ int main(int argc, char *argv[])
                         cout << endl;
 
                     }
-                       cout << endl;*/
+                       cout << endl;
 
               }
           }

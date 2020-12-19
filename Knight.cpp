@@ -16,6 +16,7 @@ Knight::Knight(string color, SDL_Point initialCoordinate, int squareSize) : Piec
     }else{
          this->setOrigin({.x=654, .y=225, .w=204, .h=193});
     }
+    this->algebraicIdentifier = 'C';
 }
 
 

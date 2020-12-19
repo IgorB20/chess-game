@@ -14,6 +14,8 @@ Bishop::Bishop(string color, SDL_Point initialCoordinate, int squareSize) : Piec
     }else{
          this->setOrigin({.x=434, .y=225, .w=204, .h=193});
     }
+
+    this->algebraicIdentifier = 'B';
 }
 
 void Bishop::showMoveOptions(Board board){

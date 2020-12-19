@@ -13,6 +13,8 @@ Queen::Queen(string color, SDL_Point initialCoordinate, int squareSize) : Piece(
     }else{
          this->setOrigin({.x=220, .y=225, .w=204, .h=193});
     }
+
+    this->algebraicIdentifier = 'D';
 }
 
 

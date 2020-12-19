@@ -23,6 +23,8 @@ King::King(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
         if(initialCoordinate.y == 0) this->castleDirection = 1;
     }
 
+    this->algebraicIdentifier = 'R';
+
 
 }
 

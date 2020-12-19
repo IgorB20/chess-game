@@ -23,6 +23,7 @@ class Piece{
     public:
 
         bool isFirstMove;
+        char algebraicIdentifier;
 
         Piece(string color, SDL_Point initialCoordinate);
         Piece() = default;

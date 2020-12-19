@@ -10,6 +10,7 @@ CONFIG -= app_bundle
 SOURCES += \
         Bishop.cpp \
         Board.cpp \
+        Bot.cpp \
         Game.cpp \
         King.cpp \
         Knight.cpp \
@@ -39,6 +40,7 @@ DEPENDPATH += $$PWD/../SDL2_image-2.0.5/x86_64-w64-mingw32/include
 HEADERS += \
     Bishop.h \
     Board.h \
+    Bot.h \
     Game.h \
     King.h \
     Knight.h \

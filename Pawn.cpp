@@ -18,6 +18,8 @@ Pawn::Pawn(string color, SDL_Point initialCoordinate, int squareSize) : Piece(co
 
     if(initialCoordinate.y == 6) this->moveDirection = -1;
     if(initialCoordinate.y == 1) this->moveDirection = 1;
+
+    this->algebraicIdentifier = ' ';
 }
 
 void Pawn::showMoveOptions(Board board){
@@ -29,20 +31,15 @@ void Pawn::showMoveOptions(Board board){
 
     this->checkDiagonalsCaptures(board);
 
-        if(this->isFirstMove){
-            if(!this->isAEnemyPiece({.x = coluna, .y = linha+(1*this->moveDirection)}, board)){
-                this->addValidSquare({.x = coluna*squareSize, .y = (linha+(1*this->moveDirection))*squareSize, .w=squareSize, .h=squareSize});
-            }
 
-            if(!this->isAEnemyPiece({.x = coluna, .y = linha+(2*this->moveDirection)}, board)){
-                this->addValidSquare({.x = coluna*squareSize, .y = (linha+(2*this->moveDirection))*squareSize, .w=squareSize, .h=squareSize});
-            }
-
-
-        }else{
-           if(!this->isAEnemyPiece({.x = coluna, .y = linha+(1*this->moveDirection)}, board))
-                this->addValidSquare({.x = coluna*squareSize, .y = (linha+(1*this->moveDirection))*squareSize, .w=squareSize, .h=squareSize});
-        }
+    if(board.controlBoard[linha+(1*this->moveDirection)][coluna] == '0'){
+       this->addValidSquare({.x = coluna*squareSize, .y = (linha+(1*this->moveDirection))*squareSize, .w=squareSize, .h=squareSize});
+          if(this->isFirstMove){
+              if(board.controlBoard[linha+(2*this->moveDirection)][coluna] == '0'){
+                  this->addValidSquare({.x = coluna*squareSize, .y = (linha+(2*this->moveDirection))*squareSize, .w=squareSize, .h=squareSize});
+              }
+          }
+    }
 
 }
 

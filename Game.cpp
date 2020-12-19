@@ -2,6 +2,8 @@
 #include <Pawn.h>
 #include <Knight.h>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 #include <PiecesInitializer.h>
 
@@ -16,10 +18,13 @@ void Game::init(){
         cout << SDL_GetError() << endl;
 
     this->running = true;
+    this->isWhiteTurn = true;
     this->initWindow();
     this->renderer = SDL_CreateRenderer(this->getWindow(), -1, 0);
     this->board = {this->getRenderer()};
+
     this->piecesTextures = IMG_LoadTexture(this->getRenderer(), "assets/images/pieces.png");
+     this->sortColors();
 
     PiecesInitializer::initAll(this->board, this->pieces);
 
@@ -39,6 +44,14 @@ void Game::init(){
     for(King* king : this->kings){
         this->pieces.push_back(king);
     }
+
+    if(this->playerIsWhite){
+        this->bot = {false};
+    }else{
+        this->bot = {true};
+    }
+
+
 }
 
 void Game::initWindow(){
@@ -49,6 +62,68 @@ void Game::initWindow(){
                                     0);
 }
 
+void Game::sortColors(){
+    srand(time(0));
+    int randomNumber = rand() % 2;
+    //cout << randomNumber << endl;
+
+    if(randomNumber == 0){
+        char board[8][8] = {
+            {'r', 'h', 'b', 'q', 'k', 'b', 'h', 'r'},
+            {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
+            {'R', 'H', 'B', 'Q', 'K', 'B', 'H', 'R'}};
+        for(int i=0; i<8;i++){
+            for(int j=0; j<8;j++){
+                this->board.controlBoard[i][j] = board[i][j];
+            }
+        }
+        this->playerIsWhite = true;
+        //this->bot = {this->pieces, false, this->board};
+
+    }else{
+        char board[8][8] = {
+            {'R', 'H', 'B', 'K', 'Q', 'B', 'H', 'R'},
+            {'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'0', '0', '0', '0', '0', '0', '0', '0'},
+            {'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'},
+            {'r', 'h', 'b', 'k', 'q', 'b', 'h', 'r'}};
+        for(int i=0; i<8;i++){
+            for(int j=0; j<8;j++){
+                this->board.controlBoard[i][j] = board[i][j];
+            }
+        }
+
+             this->playerIsWhite = false;
+          //this->bot = {this->pieces, true, this->board};
+    }
+
+
+};
+void Game::updateTurn(){
+    this->isWhiteTurn = !this->isWhiteTurn;
+    this->setSelectedPiece(nullptr);
+}
+
+void Game::registerPlay(Piece* piece){
+    if(this->checkCapture(piece)){
+        cout << piece->algebraicIdentifier;
+        cout << 'x';
+        cout << this->getBoard()->columnNames[piece->getCoordinate().x];
+        cout << this->getBoard()->rowNames[piece->getCoordinate().y] << endl;
+    }else{
+        cout << piece->algebraicIdentifier;
+        cout << this->getBoard()->columnNames[piece->getCoordinate().x];
+        cout << this->getBoard()->rowNames[piece->getCoordinate().y] << endl;
+    }
+};
 
 void Game::setSelectedPiece(Piece* piece){
     this->selectedPiece = piece;
@@ -94,7 +169,7 @@ bool Game::castle( SDL_Point mousePos){
             if(king->isCastlePossible && king->castleRook){
 
                 if(SDL_PointInRect(&mousePos, &king->castleSquare)){
-                    cout << "fazendo o rock" << endl;
+                    //cout << "fazendo o rock" << endl;
 
                      //ATUALIZANDO COORDENADA DO REI
                     king->updatePosition({.x=(king->getCoordinate().x+(2*king->castleDirection))*board.squareSize,
@@ -119,6 +194,7 @@ bool Game::castle( SDL_Point mousePos){
                     king->castleRook = nullptr;
                     king->castleSquare = {};
                     king->isFirstMove = false;
+                    this->updateTurn();
                     return true;
                 }
             }
@@ -127,7 +203,7 @@ bool Game::castle( SDL_Point mousePos){
             if(king->isBigCastlePossible && king->bigCastleRook){
 
                 if(SDL_PointInRect(&mousePos, &king->bigCastleSquare)){
-                    cout << "fazendo o grand roque" << endl;
+                    //cout << "fazendo o grand roque" << endl;
 
                      //ATUALIZANDO COORDENADA DO REI
                     king->updatePosition({.x=(king->getCoordinate().x+((2*king->castleDirection)*-1))*board.squareSize,
@@ -152,6 +228,7 @@ bool Game::castle( SDL_Point mousePos){
                     king->bigCastleRook = nullptr;
                     king->bigCastleSquare = {};
                     king->isFirstMove = false;
+                      this->updateTurn();
                     return true;
                 }
             }
@@ -190,12 +267,14 @@ void Game::checkChecks(){
                         piece->showMoveOptions(boardCopy);
 
                         for(SDL_Rect validSquare2 : piece->getValidSquares()){
-                            //if(validSquare.x == validSquare2.x && validSquare.y == validSquare2.y){
-
+                            if(piece->algebraicIdentifier == ' '){//PEÃO
+                               if(validSquare2.x/this->board.squareSize != piece->getCoordinate().x){
+                                   king->enemyPiecesValidSquares.push_back(validSquare2);
+                               }
+                            }else{
                                king->enemyPiecesValidSquares.push_back(validSquare2);
-                                //cout << "check" << endl;
+                            }
 
-                            //}
                         }
 
                         piece->resetValidSquares();
@@ -207,10 +286,6 @@ void Game::checkChecks(){
 
             }
 
-
-
-
-
             king->resetValidSquares();
             king->showMoveOptions(this->board);
             king->checkCastle(this->pieces, this->board);
@@ -220,7 +295,7 @@ void Game::checkChecks(){
 
         }else{
 
-            cout << "mexendo outra peca" << endl;
+            //cout << "mexendo outra peca" << endl;
             King * friendKing = nullptr;
             for(King* k : this->kings){
                 if(!this->getSelectedPiece()->isAEnemyPiece(k->getCoordinate(), this->board) ){
@@ -283,8 +358,8 @@ void Game::checkChecks(){
             friendKing->enemyPiecesValidSquares = kingBackup;
             if(friendKing->isOnCheck(friendKing->getCoordinate(), this->board)){
                 this->getSelectedPiece()->resetValidSquares();
-                cout << "o rei ta xeque" << endl;
-                cout << newSquares.size() << endl;
+                //cout << "o rei ta xeque" << endl;
+                //cout << newSquares.size() << endl;
                 this->selectedPiece->setValidSquares(newSquares);
                 newSquares.clear();
             }
@@ -292,6 +367,31 @@ void Game::checkChecks(){
             friendKing->enemyPiecesValidSquares.clear();
 
 }
+};
+
+bool Game::checkMate(){
+    for(King* king : this->kings){
+        for(Piece* piece : this->pieces){
+            if(king->isAEnemyPiece(piece->getCoordinate(), this->board)){
+                piece->showMoveOptions(this->board);
+                for(SDL_Rect validSquare : piece->getValidSquares()){
+                    king->enemyPiecesValidSquares.push_back(validSquare);
+                }
+                piece->resetValidSquares();
+
+                king->showMoveOptions(this->board);
+                //NÃO É SÓ ISSO O XEQUE MATE NAO
+                if(king->isOnCheck(king->getCoordinate(), this->board) && king->getValidSquares().size() == 0){
+                    cout << "xeque-mate" << endl;
+                    return true;
+                }
+            }
+
+
+        }
+    }
+
+    return false;
 };
 
 
@@ -308,23 +408,26 @@ void Game::renderPieces(){
     }
 };
 
-void Game::checkCapture(){
+bool Game::checkCapture(Piece* piece){
 
     int index = 0;
-    for(Piece* piece : this->pieces){
-          SDL_Point coordinate = piece->getCoordinate();
-          if(this->getSelectedPiece() != piece){
-              if(this->getSelectedPiece()->getCoordinate().x == coordinate.x &&
-                  this->getSelectedPiece()->getCoordinate().y == coordinate.y){
+    for(Piece* p : this->pieces){
+          SDL_Point coordinate = p->getCoordinate();
+          if(piece != p){
+              if(piece->getCoordinate().x == coordinate.x &&
+                  piece->getCoordinate().y == coordinate.y){
 
-                  delete piece;
+                  delete p;
                   this->pieces.erase(this->pieces.begin() + index);
+                  return true;
                   break;
               }
           }
 
           index++;
     }
+
+    return false;
 };
 
 

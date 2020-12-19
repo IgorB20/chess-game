@@ -6,6 +6,7 @@
 #include <Board.h>
 #include <Piece.h>
 #include <vector>
+#include <Bot.h>
 
 #include <King.h>
 
@@ -14,17 +15,24 @@ class Game{
 
         vector<Piece*> pieces; //deixar publico por enquanto
         bool running;
+        bool isWhiteTurn;
+        Bot bot;
+        bool playerIsWhite;
 
         vector<King*> kings;
         void checkChecks();
 
         Game();
+        void sortColors();
+        void updateTurn();
+        void registerPlay(Piece* piece);
+        bool checkMate();
         void renderBoard();
         void renderPieces();
         void setRunning(bool running);
         void end();
         bool isRunning();
-        void checkCapture();
+        bool checkCapture(Piece* piece);
         bool castle(SDL_Point mousePos);
         void setSelectedPiece(Piece* piece);
         Piece* getSelectedPiece();
